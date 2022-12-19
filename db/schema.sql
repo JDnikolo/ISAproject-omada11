@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS iot_home.MIAC(
 CREATE TABLE IF NOT EXISTS iot_home.MIACSumDay(
     dtime DATETIME NOT NULL,
     day_sum SMALLINT UNSIGNED NOT NULL,
-    PRIMARY KEY (dtime,device)
+    PRIMARY KEY (dtime)
 );
 -- W1
 CREATE TABLE IF NOT EXISTS iot_home.Water(
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS iot_home.Movement(
 );
 CREATE TABLE IF NOT EXISTS iot_home.Alarms(
     dtime DATETIME NOT NULL,
-    trigger VARCHAR(50) NOT NULL --  what triggered the alarm
+    alarm_trigger VARCHAR(50) NOT null, --  what triggered the alarm
     --  TODO: consider adding fields here.
     PRIMARY KEY (dtime)   
 );

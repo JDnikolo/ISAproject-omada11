@@ -68,6 +68,7 @@ def send_readings(start_time = datetime.datetime.now()-datetime.timedelta(days=2
         ## on the final reading for each day, generate daily
         ## sensor readings and append
         if current_time.hour==23 and current_time.minute>=45:
+            ##TODO: change time to 00.00 of next day
             print("Generating daily meter data.")
             Etot,Etotdata = generateEtot(Etot,time=current_time)
             messages.append({"topic":homeTopic+dayTopic+"/Etot",\

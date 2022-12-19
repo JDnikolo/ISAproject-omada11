@@ -101,3 +101,13 @@ CREATE TABLE IF NOT EXISTS iot_home.Alarms(
     --  TODO: consider adding fields here.
     PRIMARY KEY (dtime)   
 );
+
+-- rejected late events
+
+CREATE TABLE IF NOT EXISTS iot_home.RejectedEvents(
+    dtime_event DATETIME NOT NULL,
+    dtime_received DATETIME NOT NULL,
+    device varchar(5) NOT NULL,
+    reading float, --float in order to accomodate late events from all devices
+    PRIMARY KEY (dtime,device)
+)

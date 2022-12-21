@@ -14,7 +14,7 @@ def send_data(data,topic="test/",address="localhost"):
 
 def send_readings(start_time = datetime.datetime.now()-datetime.timedelta(days=2),\
     address="localhost",homeTopic="/home",
-    quarterTopic="/15min",dayTopic="/day",moveSensorTopic = "/sensor",withSleep=True):
+    quarterTopic="/15min",dayTopic="/day",moveSensorTopic = "/movement",withSleep=True):
     th1 = 20
     th2 = 20
     Etot = 0

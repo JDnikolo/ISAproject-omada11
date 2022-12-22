@@ -21,16 +21,18 @@ def generateMiAC(device = 1,time = datetime.datetime.now()):
     return time.strftime("%Y-%m-%d %H:%M:%S")+"|"+str(new)[:5]
 
 def generateEtot(previous, time = datetime.datetime.now()):
+    time=time+datetime.timedelta(hours=24)
     new = previous + 2600*24 +random.randint(-1000,1000)
-    return new,time.strftime("%Y-%m-%d %H:%M:%S")+"|"+str(new)
+    return new,time.strftime("%Y-%m-%d 00:00:00")+"|"+str(new)
 
 def generateW1(time=datetime.datetime.now()):
     new = random.random()
     return time.strftime("%Y-%m-%d %H:%M:%S")+"|"+str(new)[:5]
 
 def generateWtot(previous,time=datetime.datetime.now()):
+    time=time+datetime.timedelta(hours=24)
     new = previous + 110 +random.randint(-10,10)
-    return new,time.strftime("%Y-%m-%d %H:%M:%S")+"|"+str(new)
+    return new,time.strftime("%Y-%m-%d 00:00:00")+"|"+str(new)
 
 def generateMov1(time=datetime.datetime.now()):
     return time.strftime("%Y-%m-%d %H:%M:%S")+"|"+str(1)

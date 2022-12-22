@@ -12,7 +12,7 @@ def send_data(data,topic="test/",address="localhost"):
     pld = j
     pub.single(topic,pld,hostname=address)
 
-def send_readings(start_time = datetime.datetime.now()-datetime.timedelta(days=2),\
+def send_readings(start:datetime = datetime.datetime.now(),\
     address="localhost",homeTopic="/home",
     quarterTopic="/15min",dayTopic="/day",moveSensorTopic = "/movement",withSleep=True):
     th1 = 20
@@ -21,42 +21,43 @@ def send_readings(start_time = datetime.datetime.now()-datetime.timedelta(days=2
     Wtot = 0
     movTriggered=0
     i=1
+    start_time=datetime.datetime(start.year,start.month,start.day)
     while True:
         messages=[]
         current_time = start_time+datetime.timedelta(minutes=15*i)
         # print(current_time)
         ## Generate TH[1,2] data using previous readings and append
         th1,th1data = generate_TH(th1,current_time)
-        messages.append({"topic":homeTopic+quarterTopic+"/TH1",\
+        messages.append({"topic":homeTopic+quarterTopic+"/TH/TH1",\
             "payload":th1data})
         th2,th2data = generate_TH(th2,current_time)
-        messages.append({"topic":homeTopic+quarterTopic+"/TH2",\
+        messages.append({"topic":homeTopic+quarterTopic+"/TH/TH2",\
             "payload":th2data})
         ## Generate HVAC[1,2] data and append
-        messages.append({"topic":homeTopic+quarterTopic+"/HVAC1",\
+        messages.append({"topic":homeTopic+quarterTopic+"/HVAC/HVAC1",\
             "payload":generateHVAC(current_time)})
-        messages.append({"topic":homeTopic+quarterTopic+"/HVAC2",\
+        messages.append({"topic":homeTopic+quarterTopic+"/HVAC/HVAC2",\
             "payload":generateHVAC(current_time)})
         ## Generate MiAC[1,2] readings and append
-        messages.append({"topic":homeTopic+quarterTopic+"/MiAC1",\
+        messages.append({"topic":homeTopic+quarterTopic+"/MiAC/MiAC1",\
             "payload":generateMiAC(device=1,time=current_time)})
-        messages.append({"topic":homeTopic+quarterTopic+"/MiAC2",\
+        messages.append({"topic":homeTopic+quarterTopic+"/MiAC/MiAC2",\
             "payload":generateMiAC(device=2,time=current_time)})
         ## Generate W1 reading and append.
         W1data = generateW1(time=current_time)
-        messages.append({"topic":homeTopic+quarterTopic+"/W1",\
+        messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
             "payload":W1data})
         ## Generate W1 late data every 20 seconds and append
         if i%20==0:
             print("Generating late W1 data.")
-            W1data = generateW1(time=current_time-datetime.timedelta(days=2))
-            messages.append({"topic":homeTopic+quarterTopic+"/W1",\
+            W1data = generateW1(time=current_time-datetime.timedelta(days=1,seconds=random.randint(0,60)))
+            messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
             "payload":W1data})
         ## Generate VERY late W1 data every 120 seconds and append
         if i%120==0:
             print("Generating VERY late W1 data.")
-            W1data = generateW1(time=current_time-datetime.timedelta(days=10))
-            messages.append({"topic":homeTopic+quarterTopic+"/W1",\
+            W1data = generateW1(time=current_time-datetime.timedelta(days=10,seconds=random.randint(0,60)))
+            messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
             "payload":W1data})
         ## Randomly generate Mov1 readings and append
         if random.random()>0.5+0.1*movTriggered:
@@ -68,7 +69,6 @@ def send_readings(start_time = datetime.datetime.now()-datetime.timedelta(days=2
         ## on the final reading for each day, generate daily
         ## sensor readings and append
         if current_time.hour==23 and current_time.minute>=45:
-            ##TODO: change time to 00.00 of next day
             print("Generating daily meter data.")
             Etot,Etotdata = generateEtot(Etot,time=current_time)
             messages.append({"topic":homeTopic+dayTopic+"/Etot",\
@@ -83,3 +83,6 @@ def send_readings(start_time = datetime.datetime.now()-datetime.timedelta(days=2
         if withSleep:
             sleep(1)
         i+=1
+
+if __name__=="__main__":
+    send_readings()

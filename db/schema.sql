@@ -7,12 +7,12 @@ use `iot_home`;
 create table if not exists iot_home.TH(
     dtime datetime  not null,
     device varchar(5) not null,
-    reading decimal(3,3) not null,
+    reading decimal(6,3) not null,
     primary key (dtime,device)
 );
 create table if not exists iot_home.THAvgDay(
     dtime datetime not null,
-    day_avg decimal(3,3) not null,
+    day_avg decimal(6,3) not null,
     primary key (dtime)
 );
 -- HVAC[1,2]
@@ -42,12 +42,12 @@ CREATE TABLE IF NOT EXISTS iot_home.MIACSumDay(
 CREATE TABLE IF NOT EXISTS iot_home.Water(
     dtime DATETIME NOT NULL,
     device VARCHAR(5) NOT NULL,
-    reading SMALLINT UNSIGNED NOT NULL,
+    reading DECIMAL(4,3) NOT NULL,
     PRIMARY KEY (dtime,device)   
 );
 CREATE TABLE IF NOT EXISTS iot_home.WaterSumDay(
     dtime DATETIME NOT NULL,
-    day_sum SMALLINT UNSIGNED NOT NULL,
+    day_sum DECIMAL(6,3) NOT NULL,
     PRIMARY KEY (dtime)   
 );
 

@@ -22,9 +22,9 @@ def send_readings(start:datetime = datetime.datetime.now(),\
     movTriggered=0
     i=1
     start_time=datetime.datetime(start.year,start.month,start.day)
+    current_time=start_time
     while True:
         messages=[]
-        current_time = start_time+datetime.timedelta(minutes=15*i)
         # print(current_time)
         ## Generate TH[1,2] data using previous readings and append
         th1,th1data = generate_TH(th1,current_time)
@@ -83,6 +83,36 @@ def send_readings(start:datetime = datetime.datetime.now(),\
         if withSleep:
             sleep(1)
         i+=1
+        current_time = start_time+datetime.timedelta(minutes=15*i)
+
+
+def send_daily_only(start:datetime = datetime.datetime.now(),\
+    address="localhost",homeTopic="/home",
+    dayTopic="/day",withSleep=True):
+    Etot = 0
+    Wtot = 0
+    i=1
+    start_time=datetime.datetime(start.year,start.month,start.day,minute=50)
+    current_time=start_time
+    while True:
+        ## on the final reading for each day, generate daily
+        ## sensor readings and append
+        if current_time.hour==23 and current_time.minute>=45:
+            messages=[]
+            print("\nGenerating daily meter data.")
+            Etot,Etotdata = generateEtot(Etot,time=current_time)
+            messages.append({"topic":homeTopic+dayTopic+"/Etot",\
+                "payload":Etotdata})
+            Wtot,Wtotdata = generateWtot(Wtot,time=current_time)
+            messages.append({"topic":homeTopic+dayTopic+"/Wtot",\
+                "payload":Wtotdata})     
+            #print(messages)
+            pub.multiple(messages,hostname=address)
+        if withSleep:
+            sleep(0.25)
+        i+=1
+        current_time = start_time+datetime.timedelta(hours=1*i)
+        print(current_time,end='\r')
 
 if __name__=="__main__":
     send_readings()

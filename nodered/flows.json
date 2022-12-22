@@ -48,6 +48,22 @@
         "env": []
     },
     {
+        "id": "9897c3cec5c2717d",
+        "type": "tab",
+        "label": "Etot parsing",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "19e583603de48a62",
+        "type": "tab",
+        "label": "Wtot parsing",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "fe78548ad9d34539",
         "type": "mqtt-broker",
         "name": "",
@@ -1580,5 +1596,553 @@
                 "296f5ccc93987e6d"
             ]
         ]
+    },
+    {
+        "id": "3de9a66d8a07ae05",
+        "type": "mqtt in",
+        "z": "9897c3cec5c2717d",
+        "name": "Etot",
+        "topic": "/home/day/Etot",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "fe78548ad9d34539",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 240,
+        "wires": [
+            [
+                "e96dbcf6860a47f5"
+            ]
+        ]
+    },
+    {
+        "id": "c384d86d80a9e17a",
+        "type": "debug",
+        "z": "9897c3cec5c2717d",
+        "name": "parsed payload",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "e96dbcf6860a47f5",
+        "type": "function",
+        "z": "9897c3cec5c2717d",
+        "name": "parse data",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 240,
+        "wires": [
+            [
+                "c384d86d80a9e17a",
+                "36b1991d71c480d9"
+            ]
+        ]
+    },
+    {
+        "id": "cd6eb3ea78add311",
+        "type": "function",
+        "z": "9897c3cec5c2717d",
+        "name": "insert raw data",
+        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO Etot(dtime, reading) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 160,
+        "wires": [
+            [
+                "07d288e064082aa6"
+            ]
+        ]
+    },
+    {
+        "id": "07d288e064082aa6",
+        "type": "mysql",
+        "z": "9897c3cec5c2717d",
+        "mydb": "28bf60a032e41c72",
+        "name": "db",
+        "x": 1010,
+        "y": 140,
+        "wires": [
+            [
+                "a99f650709583ba6"
+            ]
+        ]
+    },
+    {
+        "id": "a99f650709583ba6",
+        "type": "debug",
+        "z": "9897c3cec5c2717d",
+        "name": "debug 16",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "36b1991d71c480d9",
+        "type": "switch",
+        "z": "9897c3cec5c2717d",
+        "name": "check if late",
+        "property": "payload.dtime",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "payload.startOfDay",
+                "vt": "msg"
+            },
+            {
+                "t": "gte",
+                "v": "payload.startOfYesterday",
+                "vt": "msg"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 3,
+        "x": 570,
+        "y": 440,
+        "wires": [
+            [
+                "cd6eb3ea78add311",
+                "6cf9e5a2f6a23797",
+                "b209a1b3d1835914"
+            ],
+            [
+                "4f3caec635066030"
+            ],
+            [
+                "6c1eb8b39f74f05e"
+            ]
+        ],
+        "outputLabels": [
+            "not late",
+            "late agg",
+            "too late"
+        ]
+    },
+    {
+        "id": "4f3caec635066030",
+        "type": "debug",
+        "z": "9897c3cec5c2717d",
+        "name": "late agg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "6c1eb8b39f74f05e",
+        "type": "debug",
+        "z": "9897c3cec5c2717d",
+        "name": "too late",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "6cf9e5a2f6a23797",
+        "type": "debug",
+        "z": "9897c3cec5c2717d",
+        "name": "todo: aggregate",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "b209a1b3d1835914",
+        "type": "function",
+        "z": "9897c3cec5c2717d",
+        "name": "calculate day diff",
+        "func": "if (!flow.get(\"previousEtot\")){\n    flow.set(\"previousEtot\", msg.payload.reading);\n    msg.payload.day_diff = 0;\n}else{\n    var diff = msg.payload.reading - flow.get(\"previousEtot\");\n    if (diff<0) diff=0;\n    msg.payload.day_diff = diff;\n    flow.set(\"previousEtot\", msg.payload.reading);\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 420,
+        "wires": [
+            [
+                "3b4f76493e54f2bd"
+            ]
+        ]
+    },
+    {
+        "id": "3b4f76493e54f2bd",
+        "type": "function",
+        "z": "9897c3cec5c2717d",
+        "name": "insert daydiff data",
+        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.topic = \"INSERT INTO EtotDayDiff(dtime, day_diff) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 480,
+        "wires": [
+            [
+                "3ba4db592cc102ef"
+            ]
+        ]
+    },
+    {
+        "id": "3ba4db592cc102ef",
+        "type": "mysql",
+        "z": "9897c3cec5c2717d",
+        "mydb": "28bf60a032e41c72",
+        "name": "db",
+        "x": 1170,
+        "y": 420,
+        "wires": [
+            [
+                "d3d1f7876e8d9112"
+            ]
+        ]
+    },
+    {
+        "id": "d3d1f7876e8d9112",
+        "type": "debug",
+        "z": "9897c3cec5c2717d",
+        "name": "debug 17",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "654b917c1993aef4",
+        "type": "mqtt in",
+        "z": "19e583603de48a62",
+        "name": "Wtot",
+        "topic": "/home/day/Wtot",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "fe78548ad9d34539",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 250,
+        "y": 300,
+        "wires": [
+            [
+                "9c3e0a56a9198db3"
+            ]
+        ]
+    },
+    {
+        "id": "de0696e94f9d8f57",
+        "type": "debug",
+        "z": "19e583603de48a62",
+        "name": "parsed payload",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9c3e0a56a9198db3",
+        "type": "function",
+        "z": "19e583603de48a62",
+        "name": "parse data",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 300,
+        "wires": [
+            [
+                "de0696e94f9d8f57",
+                "dbb88a3332e234fc"
+            ]
+        ]
+    },
+    {
+        "id": "6da87171565b640b",
+        "type": "function",
+        "z": "19e583603de48a62",
+        "name": "insert raw data",
+        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO Wtot(dtime, reading) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 220,
+        "wires": [
+            [
+                "3076d5bf4e4810e3"
+            ]
+        ]
+    },
+    {
+        "id": "3076d5bf4e4810e3",
+        "type": "mysql",
+        "z": "19e583603de48a62",
+        "mydb": "28bf60a032e41c72",
+        "name": "db",
+        "x": 1030,
+        "y": 200,
+        "wires": [
+            [
+                "40d4ca6e27dcfc11"
+            ]
+        ]
+    },
+    {
+        "id": "40d4ca6e27dcfc11",
+        "type": "debug",
+        "z": "19e583603de48a62",
+        "name": "debug 18",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "dbb88a3332e234fc",
+        "type": "switch",
+        "z": "19e583603de48a62",
+        "name": "check if late",
+        "property": "payload.dtime",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "payload.startOfDay",
+                "vt": "msg"
+            },
+            {
+                "t": "gte",
+                "v": "payload.startOfYesterday",
+                "vt": "msg"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 3,
+        "x": 590,
+        "y": 500,
+        "wires": [
+            [
+                "6da87171565b640b",
+                "96c76f33e9376ff3"
+            ],
+            [
+                "6d21be507757bf92"
+            ],
+            [
+                "a6938f89787b824c"
+            ]
+        ],
+        "outputLabels": [
+            "not late",
+            "late agg",
+            "too late"
+        ]
+    },
+    {
+        "id": "6d21be507757bf92",
+        "type": "debug",
+        "z": "19e583603de48a62",
+        "name": "late agg",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "a6938f89787b824c",
+        "type": "debug",
+        "z": "19e583603de48a62",
+        "name": "too late",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "5bf458d8c88bfef9",
+        "type": "debug",
+        "z": "19e583603de48a62",
+        "name": "todo: aggregate",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "96c76f33e9376ff3",
+        "type": "function",
+        "z": "19e583603de48a62",
+        "name": "calculate day diff",
+        "func": "if (!flow.get(\"previousWtot\")){\n    flow.set(\"previousWtot\", msg.payload.reading);\n    msg.payload.day_diff = 0;\n}else{\n    var diff=msg.payload.reading-flow.get(\"previousWtot\");\n    if (diff < 0) diff = 0;\n    msg.payload.day_diff = diff;\n    flow.set(\"previousWtot\", msg.payload.reading);\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 480,
+        "wires": [
+            [
+                "ac86e3d65cfdc621"
+            ]
+        ]
+    },
+    {
+        "id": "ac86e3d65cfdc621",
+        "type": "function",
+        "z": "19e583603de48a62",
+        "name": "insert daydiff data",
+        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.topic = \"INSERT INTO WtotDayDiff(dtime, day_diff) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 540,
+        "wires": [
+            [
+                "7cde1673b4605df9",
+                "5bf458d8c88bfef9"
+            ]
+        ]
+    },
+    {
+        "id": "7cde1673b4605df9",
+        "type": "mysql",
+        "z": "19e583603de48a62",
+        "mydb": "28bf60a032e41c72",
+        "name": "db",
+        "x": 1230,
+        "y": 480,
+        "wires": [
+            [
+                "a34dc1ec6161c8e3"
+            ]
+        ]
+    },
+    {
+        "id": "a34dc1ec6161c8e3",
+        "type": "debug",
+        "z": "19e583603de48a62",
+        "name": "debug 19",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1360,
+        "y": 420,
+        "wires": []
     }
 ]

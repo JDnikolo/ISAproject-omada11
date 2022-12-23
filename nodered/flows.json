@@ -1,6 +1,6 @@
 [
     {
-        "id": "2f0a0fbf3b243a55",
+        "id": "3a27befe6d14864d",
         "type": "tab",
         "label": "Insert raw data",
         "disabled": false,
@@ -8,7 +8,7 @@
         "env": []
     },
     {
-        "id": "5dcee142e7466c19",
+        "id": "8efdc04156fb7903",
         "type": "tab",
         "label": "TH parsing",
         "disabled": false,
@@ -16,7 +16,7 @@
         "env": []
     },
     {
-        "id": "6480b234d0b27d3c",
+        "id": "17ce1edd4d54f222",
         "type": "tab",
         "label": "HVAC Parsing",
         "disabled": false,
@@ -24,7 +24,7 @@
         "env": []
     },
     {
-        "id": "e5d96791dd7f9f50",
+        "id": "2b6ef3fbc7846079",
         "type": "tab",
         "label": "MiAC Parsing",
         "disabled": false,
@@ -32,7 +32,7 @@
         "env": []
     },
     {
-        "id": "31ff021eab9c045f",
+        "id": "2108fc68644b39eb",
         "type": "tab",
         "label": "Water Parsing",
         "disabled": false,
@@ -40,7 +40,7 @@
         "env": []
     },
     {
-        "id": "fdef74598349cbe8",
+        "id": "54a141b54b687123",
         "type": "tab",
         "label": "Movement Parsing",
         "disabled": false,
@@ -48,7 +48,7 @@
         "env": []
     },
     {
-        "id": "9897c3cec5c2717d",
+        "id": "db79e7d3fca21e88",
         "type": "tab",
         "label": "Etot parsing",
         "disabled": false,
@@ -56,7 +56,7 @@
         "env": []
     },
     {
-        "id": "19e583603de48a62",
+        "id": "2279f0ac8324c7e2",
         "type": "tab",
         "label": "Wtot parsing",
         "disabled": false,
@@ -101,9 +101,9 @@
         "charset": "UTF8"
     },
     {
-        "id": "44b5ae1d98199f60",
+        "id": "6945d8be0cda55ac",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "hvac readings",
         "topic": "/home/15min/hvac",
         "qos": "2",
@@ -117,29 +117,29 @@
         "y": 100,
         "wires": [
             [
-                "5f4952da6116e6d2",
-                "435d66bee0801f7c"
+                "bb5a4d5d3879eaba",
+                "07d1f1ab43e4fbfc"
             ]
         ]
     },
     {
-        "id": "1c7cc082645c132c",
+        "id": "117d834ac67e9dbb",
         "type": "mysql",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 870,
         "y": 480,
         "wires": [
             [
-                "7db8d4e56c96ed10"
+                "cdc2caef56de0f03"
             ]
         ]
     },
     {
-        "id": "435d66bee0801f7c",
+        "id": "07d1f1ab43e4fbfc",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\nmsg.topic = \"INSERT INTO HVAC(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -151,14 +151,14 @@
         "y": 100,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "7db8d4e56c96ed10",
+        "id": "cdc2caef56de0f03",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 2",
         "active": true,
         "tosidebar": true,
@@ -173,9 +173,9 @@
         "wires": []
     },
     {
-        "id": "5f4952da6116e6d2",
+        "id": "bb5a4d5d3879eaba",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 1",
         "active": true,
         "tosidebar": true,
@@ -190,9 +190,9 @@
         "wires": []
     },
     {
-        "id": "4f7bea4968af11a8",
+        "id": "a92096229880249b",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "th readings",
         "topic": "/home/15min/th",
         "qos": "2",
@@ -206,15 +206,15 @@
         "y": 240,
         "wires": [
             [
-                "9f3519a6d2b53d7a",
-                "48a0a023dc3d3cf2"
+                "ecb2987f55a38530",
+                "5f7d7504ff6d6262"
             ]
         ]
     },
     {
-        "id": "48a0a023dc3d3cf2",
+        "id": "5f7d7504ff6d6262",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\nmsg.topic = \"INSERT INTO TH(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -226,14 +226,14 @@
         "y": 240,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "9f3519a6d2b53d7a",
+        "id": "ecb2987f55a38530",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 3",
         "active": true,
         "tosidebar": true,
@@ -248,9 +248,9 @@
         "wires": []
     },
     {
-        "id": "b97055f963c3b362",
+        "id": "2d0fdac6ba135fca",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "miac readings",
         "topic": "/home/15min/miac",
         "qos": "2",
@@ -264,15 +264,15 @@
         "y": 380,
         "wires": [
             [
-                "0efe6e481974f096",
-                "3ff730ce21f13d80"
+                "fdb16459e831f85d",
+                "88be4ea8d9fd6cc0"
             ]
         ]
     },
     {
-        "id": "3ff730ce21f13d80",
+        "id": "88be4ea8d9fd6cc0",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\ncontext.set('last_miac', data.reading);\nmsg.topic = \"INSERT INTO MIAC(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -284,14 +284,14 @@
         "y": 380,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "0efe6e481974f096",
+        "id": "fdb16459e831f85d",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 4",
         "active": true,
         "tosidebar": true,
@@ -306,9 +306,9 @@
         "wires": []
     },
     {
-        "id": "d82f14897e7a1e11",
+        "id": "d102bcf59d790c38",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "etot readings",
         "topic": "/home/day/etot",
         "qos": "2",
@@ -322,15 +322,15 @@
         "y": 520,
         "wires": [
             [
-                "a2011820f669f56a",
-                "7893257ee7b52d5b"
+                "07424ef8d151054b",
+                "5e054e3ae67c97bb"
             ]
         ]
     },
     {
-        "id": "7893257ee7b52d5b",
+        "id": "5e054e3ae67c97bb",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO Etot(dtime, reading) VALUES (?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -342,14 +342,14 @@
         "y": 520,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "a2011820f669f56a",
+        "id": "07424ef8d151054b",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 5",
         "active": true,
         "tosidebar": true,
@@ -364,9 +364,9 @@
         "wires": []
     },
     {
-        "id": "9fe796b7255df59b",
+        "id": "a643afce827a5534",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "move readings",
         "topic": "/home/sensor",
         "qos": "2",
@@ -380,16 +380,16 @@
         "y": 640,
         "wires": [
             [
-                "520b08c82c8e152f",
-                "1cd52c74b530eccf",
-                "98b01f05f729e6d2"
+                "39f6741168e8ef7b",
+                "7255652051994995",
+                "5910bc943a1b9ad3"
             ]
         ]
     },
     {
-        "id": "1cd52c74b530eccf",
+        "id": "7255652051994995",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device];\nmsg.topic = \"INSERT INTO Movement(dtime, device) VALUES (?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -401,14 +401,14 @@
         "y": 640,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "520b08c82c8e152f",
+        "id": "39f6741168e8ef7b",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 6",
         "active": true,
         "tosidebar": true,
@@ -423,9 +423,9 @@
         "wires": []
     },
     {
-        "id": "93bf66b5d52736e7",
+        "id": "d342b054fab01191",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "water readings",
         "topic": "/home/15min/water",
         "qos": "2",
@@ -439,15 +439,15 @@
         "y": 760,
         "wires": [
             [
-                "11fa1b2b9f5e5e34",
-                "8ad4aa490e2a69bc"
+                "0845392d752ec892",
+                "644ba14cdb245581"
             ]
         ]
     },
     {
-        "id": "8ad4aa490e2a69bc",
+        "id": "644ba14cdb245581",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nvar today = new Date();\nvar readingDate = new Date(data.dtime);\nvar dayDiff = Math.floor((today.getTime() - readingDate.getTime()) / 86400000)\nif (dayDiff == 0) {\n    msg.payload = [data.dtime, data.device, data.reading];\n    msg.topic = \"INSERT INTO Water(dtime, device, reading) VALUES (?, ?);\";\n}\nelse if (dayDiff == 10) {\n    msg.payload = [data.dtime_event, data.dtime_received, data.device, data.reading];\n    msg.topic = \"INSERT INTO RejectedEvents(dtime_event, dtime_received, device, reading) VALUES (?, ?);\";\n}\nreturn msg;",
         "outputs": 1,
@@ -459,14 +459,14 @@
         "y": 760,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "11fa1b2b9f5e5e34",
+        "id": "0845392d752ec892",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 7",
         "active": true,
         "tosidebar": true,
@@ -481,9 +481,9 @@
         "wires": []
     },
     {
-        "id": "aee17d885dca7c94",
+        "id": "6d832a69ba97fd83",
         "type": "mqtt in",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "watertot readings",
         "topic": "/home/day/watertot",
         "qos": "2",
@@ -497,15 +497,15 @@
         "y": 900,
         "wires": [
             [
-                "e06db19ba22ea37d",
-                "ad4dddd3e9fe7ab7"
+                "4e745ee2ea3b8dc1",
+                "63df871e7d1018e0"
             ]
         ]
     },
     {
-        "id": "ad4dddd3e9fe7ab7",
+        "id": "63df871e7d1018e0",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "insert query",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO watertot(device, reading) VALUES (?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -517,14 +517,14 @@
         "y": 900,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "e06db19ba22ea37d",
+        "id": "4e745ee2ea3b8dc1",
         "type": "debug",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "debug 8",
         "active": true,
         "tosidebar": true,
@@ -539,9 +539,9 @@
         "wires": []
     },
     {
-        "id": "98b01f05f729e6d2",
+        "id": "5910bc943a1b9ad3",
         "type": "function",
-        "z": "2f0a0fbf3b243a55",
+        "z": "3a27befe6d14864d",
         "name": "trigger_alarm",
         "func": "function is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (context.get('last_miac') < 100) {\n    msg.payload.trigger = 'energy';\n}\nelse if (is_night_time()) {\n    msg.payload.trigger = 'time';\n}\nelse {\n    return null\n}\n\nconst data = msg.payload;\nmsg.payload = [data.dtime, data.trigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, trigger) VALUES (?, ?);\";\nreturn msg;\n",
         "outputs": 1,
@@ -553,14 +553,14 @@
         "y": 1080,
         "wires": [
             [
-                "1c7cc082645c132c"
+                "117d834ac67e9dbb"
             ]
         ]
     },
     {
-        "id": "53976413b404b186",
+        "id": "23f91444edef3463",
         "type": "mqtt in",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "TH*",
         "topic": "/home/15min/TH/#",
         "qos": "2",
@@ -574,14 +574,14 @@
         "y": 220,
         "wires": [
             [
-                "426ac1b3d4f87004"
+                "754c96ec869615ea"
             ]
         ]
     },
     {
-        "id": "dc65a3e8bef653c6",
+        "id": "41d3c48c688ca09f",
         "type": "debug",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -596,9 +596,9 @@
         "wires": []
     },
     {
-        "id": "426ac1b3d4f87004",
+        "id": "754c96ec869615ea",
         "type": "function",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -610,15 +610,15 @@
         "y": 220,
         "wires": [
             [
-                "dc65a3e8bef653c6",
-                "c7b392f91e4a0421"
+                "41d3c48c688ca09f",
+                "d16e6fc3e29dc9ed"
             ]
         ]
     },
     {
-        "id": "63ea150ad9c258c2",
+        "id": "e1ba02a1460b50fd",
         "type": "function",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\nmsg.topic = \"INSERT INTO TH(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -630,28 +630,28 @@
         "y": 140,
         "wires": [
             [
-                "b4c09fc4cd40188c"
+                "2e063b50f0644d7d"
             ]
         ]
     },
     {
-        "id": "b4c09fc4cd40188c",
+        "id": "2e063b50f0644d7d",
         "type": "mysql",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 850,
         "y": 120,
         "wires": [
             [
-                "80fb3ade04a6c23c"
+                "6e1de33e561bc717"
             ]
         ]
     },
     {
-        "id": "80fb3ade04a6c23c",
+        "id": "6e1de33e561bc717",
         "type": "debug",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -666,9 +666,9 @@
         "wires": []
     },
     {
-        "id": "c7b392f91e4a0421",
+        "id": "d16e6fc3e29dc9ed",
         "type": "switch",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -694,14 +694,14 @@
         "y": 420,
         "wires": [
             [
-                "63ea150ad9c258c2",
-                "96eaecb2cf743a14"
+                "e1ba02a1460b50fd",
+                "021026d9c929bd57"
             ],
             [
-                "913061144b8606fb"
+                "878e6b7f3f63ebfc"
             ],
             [
-                "37e715f559917342"
+                "2e09e28c64e887e0"
             ]
         ],
         "outputLabels": [
@@ -711,9 +711,9 @@
         ]
     },
     {
-        "id": "913061144b8606fb",
+        "id": "878e6b7f3f63ebfc",
         "type": "debug",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "late agg",
         "active": false,
         "tosidebar": true,
@@ -728,9 +728,9 @@
         "wires": []
     },
     {
-        "id": "37e715f559917342",
+        "id": "2e09e28c64e887e0",
         "type": "debug",
-        "z": "5dcee142e7466c19",
+        "z": "8efdc04156fb7903",
         "name": "too late",
         "active": true,
         "tosidebar": true,
@@ -745,26 +745,28 @@
         "wires": []
     },
     {
-        "id": "96eaecb2cf743a14",
-        "type": "debug",
-        "z": "5dcee142e7466c19",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 740,
-        "y": 340,
-        "wires": []
+        "id": "021026d9c929bd57",
+        "type": "function",
+        "z": "8efdc04156fb7903",
+        "name": "aggregation",
+        "func": "const data = msg.payload;\n\nif (!context.th) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.th = {\n        \"dtime\": date,\n        \"freq\": 0.0,\n        \"sum\": 0.0  \n    };\n}\n\nif (context.th.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.th.dtime, context.th.sum/context.th.freq];\n    msg.topic = \"INSERT INTO THAvgDay(dtime, day_avg) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.th.dtime = date;\n    context.th.freq = 1.0;\n    context.th.sum = data.reading;\n    return msg;\n}\n\ncontext.th.freq += 1.0;\ncontext.th.sum += data.reading;\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 320,
+        "wires": [
+            [
+                "2e063b50f0644d7d"
+            ]
+        ]
     },
     {
-        "id": "b7874497605e292a",
+        "id": "cc057af8082807c8",
         "type": "mqtt in",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "HVAC*",
         "topic": "/home/15min/HVAC/#",
         "qos": "2",
@@ -778,14 +780,14 @@
         "y": 240,
         "wires": [
             [
-                "d7e31234dd2c73a8"
+                "7513f63e2be84093"
             ]
         ]
     },
     {
-        "id": "f6b80a88f497f1fe",
+        "id": "1799d813bb9d0388",
         "type": "debug",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -800,9 +802,9 @@
         "wires": []
     },
     {
-        "id": "d7e31234dd2c73a8",
+        "id": "7513f63e2be84093",
         "type": "function",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseInt(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -814,15 +816,15 @@
         "y": 240,
         "wires": [
             [
-                "f6b80a88f497f1fe",
-                "a2aa234f86ba0148"
+                "1799d813bb9d0388",
+                "c8112392122d40e7"
             ]
         ]
     },
     {
-        "id": "230577c76f4e023e",
+        "id": "6db38e4fdeacc640",
         "type": "function",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\nmsg.topic = \"INSERT INTO HVAC(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -834,28 +836,28 @@
         "y": 160,
         "wires": [
             [
-                "44c124bd10d4a0d4"
+                "e5dc51ef21296b47"
             ]
         ]
     },
     {
-        "id": "44c124bd10d4a0d4",
+        "id": "e5dc51ef21296b47",
         "type": "mysql",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 870,
         "y": 140,
         "wires": [
             [
-                "823d5f45d098d95b"
+                "14d51e6a2a48ad2b"
             ]
         ]
     },
     {
-        "id": "823d5f45d098d95b",
+        "id": "14d51e6a2a48ad2b",
         "type": "debug",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -870,9 +872,9 @@
         "wires": []
     },
     {
-        "id": "a2aa234f86ba0148",
+        "id": "c8112392122d40e7",
         "type": "switch",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -898,14 +900,14 @@
         "y": 440,
         "wires": [
             [
-                "230577c76f4e023e",
-                "543482a674a32d48"
+                "6db38e4fdeacc640",
+                "a98ad640210b76b2"
             ],
             [
-                "be8d591070876729"
+                "d1734cbde395faf9"
             ],
             [
-                "8346f4df302c0942"
+                "3127de8e0eec35dd"
             ]
         ],
         "outputLabels": [
@@ -915,9 +917,9 @@
         ]
     },
     {
-        "id": "be8d591070876729",
+        "id": "d1734cbde395faf9",
         "type": "debug",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "late agg",
         "active": false,
         "tosidebar": true,
@@ -932,9 +934,9 @@
         "wires": []
     },
     {
-        "id": "8346f4df302c0942",
+        "id": "3127de8e0eec35dd",
         "type": "debug",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "too late",
         "active": true,
         "tosidebar": true,
@@ -949,9 +951,9 @@
         "wires": []
     },
     {
-        "id": "543482a674a32d48",
+        "id": "a98ad640210b76b2",
         "type": "debug",
-        "z": "6480b234d0b27d3c",
+        "z": "17ce1edd4d54f222",
         "name": "todo: aggregate",
         "active": true,
         "tosidebar": true,
@@ -966,9 +968,9 @@
         "wires": []
     },
     {
-        "id": "b76acac2ec934869",
+        "id": "117b4a92f2fa0c0f",
         "type": "mqtt in",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "MiAC*",
         "topic": "/home/15min/MiAC/#",
         "qos": "2",
@@ -982,14 +984,14 @@
         "y": 280,
         "wires": [
             [
-                "9097d8902c7fb42a"
+                "35229292b7f81e13"
             ]
         ]
     },
     {
-        "id": "476af25ef72ea1b8",
+        "id": "b8550b8be4e93850",
         "type": "debug",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -1004,9 +1006,9 @@
         "wires": []
     },
     {
-        "id": "9097d8902c7fb42a",
+        "id": "35229292b7f81e13",
         "type": "function",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseInt(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -1018,15 +1020,15 @@
         "y": 280,
         "wires": [
             [
-                "476af25ef72ea1b8",
-                "a658a6c8b475480f"
+                "b8550b8be4e93850",
+                "0f31da8ee50d6380"
             ]
         ]
     },
     {
-        "id": "7c984de6bf013a8f",
+        "id": "e7f4144755486f7c",
         "type": "function",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\ncontext.set('last_miac', data.reading);\nmsg.topic = \"INSERT INTO MiAC(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -1038,28 +1040,28 @@
         "y": 200,
         "wires": [
             [
-                "a3831dfbd91e9887"
+                "994ce9d755b19649"
             ]
         ]
     },
     {
-        "id": "a3831dfbd91e9887",
+        "id": "994ce9d755b19649",
         "type": "mysql",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 890,
         "y": 180,
         "wires": [
             [
-                "e421e0d3146ce6d1"
+                "c71b32ed0d4b9327"
             ]
         ]
     },
     {
-        "id": "e421e0d3146ce6d1",
+        "id": "c71b32ed0d4b9327",
         "type": "debug",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -1074,9 +1076,9 @@
         "wires": []
     },
     {
-        "id": "a658a6c8b475480f",
+        "id": "0f31da8ee50d6380",
         "type": "switch",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -1102,14 +1104,14 @@
         "y": 480,
         "wires": [
             [
-                "7c984de6bf013a8f",
-                "83557aebe480c3a0"
+                "e7f4144755486f7c",
+                "3e86f6eaf3152766"
             ],
             [
-                "777aa9946d419749"
+                "d58fbf3bad3efd2c"
             ],
             [
-                "8d1392ff68aa183f"
+                "e4e7ce6052b1fbef"
             ]
         ],
         "outputLabels": [
@@ -1119,9 +1121,9 @@
         ]
     },
     {
-        "id": "777aa9946d419749",
+        "id": "d58fbf3bad3efd2c",
         "type": "debug",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "late agg",
         "active": false,
         "tosidebar": true,
@@ -1136,9 +1138,9 @@
         "wires": []
     },
     {
-        "id": "8d1392ff68aa183f",
+        "id": "e4e7ce6052b1fbef",
         "type": "debug",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "too late",
         "active": true,
         "tosidebar": true,
@@ -1153,9 +1155,9 @@
         "wires": []
     },
     {
-        "id": "83557aebe480c3a0",
+        "id": "3e86f6eaf3152766",
         "type": "debug",
-        "z": "e5d96791dd7f9f50",
+        "z": "2b6ef3fbc7846079",
         "name": "todo: aggregate",
         "active": true,
         "tosidebar": true,
@@ -1170,9 +1172,9 @@
         "wires": []
     },
     {
-        "id": "2712f1961138e411",
+        "id": "fef2eb77b00ec407",
         "type": "mqtt in",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "Water*",
         "topic": "/home/15min/W/#",
         "qos": "2",
@@ -1186,14 +1188,14 @@
         "y": 240,
         "wires": [
             [
-                "25e53b6ba4364842"
+                "45bdcfeb2866909a"
             ]
         ]
     },
     {
-        "id": "43c2f05bfa32ab12",
+        "id": "78f37cef7421b9c3",
         "type": "debug",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -1208,9 +1210,9 @@
         "wires": []
     },
     {
-        "id": "25e53b6ba4364842",
+        "id": "45bdcfeb2866909a",
         "type": "function",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -1222,15 +1224,15 @@
         "y": 240,
         "wires": [
             [
-                "43c2f05bfa32ab12",
-                "830dbc62a078200c"
+                "78f37cef7421b9c3",
+                "9d2a107a21898411"
             ]
         ]
     },
     {
-        "id": "a324b22d05afaafd",
+        "id": "7fe96812a1e882ec",
         "type": "function",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\nmsg.topic = \"INSERT INTO Water(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -1242,28 +1244,28 @@
         "y": 160,
         "wires": [
             [
-                "c99dd42b76f7e201"
+                "19be005aa505d936"
             ]
         ]
     },
     {
-        "id": "c99dd42b76f7e201",
+        "id": "19be005aa505d936",
         "type": "mysql",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 930,
         "y": 140,
         "wires": [
             [
-                "cc25e0599e46b595"
+                "69923c0315c8e5a9"
             ]
         ]
     },
     {
-        "id": "cc25e0599e46b595",
+        "id": "69923c0315c8e5a9",
         "type": "debug",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -1278,9 +1280,9 @@
         "wires": []
     },
     {
-        "id": "830dbc62a078200c",
+        "id": "9d2a107a21898411",
         "type": "switch",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -1306,14 +1308,14 @@
         "y": 440,
         "wires": [
             [
-                "a324b22d05afaafd",
-                "b889e333afd9bc02"
+                "7fe96812a1e882ec",
+                "99e241a914cf2e77"
             ],
             [
-                "08f01c877d19f57f"
+                "333461b800bf3cfa"
             ],
             [
-                "e5906c9a86e1a7e2"
+                "6512695725873bb5"
             ]
         ],
         "outputLabels": [
@@ -1323,9 +1325,9 @@
         ]
     },
     {
-        "id": "08f01c877d19f57f",
+        "id": "333461b800bf3cfa",
         "type": "debug",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "late agg",
         "active": false,
         "tosidebar": true,
@@ -1340,9 +1342,9 @@
         "wires": []
     },
     {
-        "id": "e5906c9a86e1a7e2",
+        "id": "6512695725873bb5",
         "type": "debug",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "too late",
         "active": true,
         "tosidebar": true,
@@ -1357,9 +1359,9 @@
         "wires": []
     },
     {
-        "id": "b889e333afd9bc02",
+        "id": "99e241a914cf2e77",
         "type": "debug",
-        "z": "31ff021eab9c045f",
+        "z": "2108fc68644b39eb",
         "name": "todo: aggregate",
         "active": true,
         "tosidebar": true,
@@ -1374,9 +1376,9 @@
         "wires": []
     },
     {
-        "id": "96451a6a45c15c87",
+        "id": "81bc7faf3262997e",
         "type": "mqtt in",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "Movement*",
         "topic": "/home/movement/#",
         "qos": "2",
@@ -1390,14 +1392,14 @@
         "y": 240,
         "wires": [
             [
-                "8d95b9a1a1bfd14e"
+                "b4e49444964521a4"
             ]
         ]
     },
     {
-        "id": "21b6a07a06e646bc",
+        "id": "c393e1f182fdc252",
         "type": "debug",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -1412,9 +1414,9 @@
         "wires": []
     },
     {
-        "id": "8d95b9a1a1bfd14e",
+        "id": "b4e49444964521a4",
         "type": "function",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst device = msg.topic.split(\"/\")[3];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -1426,15 +1428,15 @@
         "y": 240,
         "wires": [
             [
-                "21b6a07a06e646bc",
-                "c5976a87b05758f6"
+                "c393e1f182fdc252",
+                "df8cc4ea7747e7e9"
             ]
         ]
     },
     {
-        "id": "259a82af60fa2d39",
+        "id": "779302da69427e73",
         "type": "function",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device];\nmsg.topic = \"INSERT INTO Movement(dtime, device) VALUES ( ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -1446,28 +1448,28 @@
         "y": 160,
         "wires": [
             [
-                "296f5ccc93987e6d"
+                "d725eac96ddda3b4"
             ]
         ]
     },
     {
-        "id": "296f5ccc93987e6d",
+        "id": "d725eac96ddda3b4",
         "type": "mysql",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 910,
         "y": 140,
         "wires": [
             [
-                "94575dcd4536116c"
+                "97533937ab87a3e5"
             ]
         ]
     },
     {
-        "id": "94575dcd4536116c",
+        "id": "97533937ab87a3e5",
         "type": "debug",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "debug 15",
         "active": false,
         "tosidebar": true,
@@ -1482,9 +1484,9 @@
         "wires": []
     },
     {
-        "id": "c5976a87b05758f6",
+        "id": "df8cc4ea7747e7e9",
         "type": "switch",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -1510,15 +1512,15 @@
         "y": 440,
         "wires": [
             [
-                "259a82af60fa2d39",
-                "c935442a9e9773c5",
-                "529be494a977d589"
+                "779302da69427e73",
+                "b129dafef9a8f2e0",
+                "1d07da5de3624763"
             ],
             [
-                "3250e94be313a04c"
+                "e13601e9348ae90d"
             ],
             [
-                "ecd4c17f01dfa308"
+                "f91c22110d315750"
             ]
         ],
         "outputLabels": [
@@ -1528,9 +1530,9 @@
         ]
     },
     {
-        "id": "3250e94be313a04c",
+        "id": "e13601e9348ae90d",
         "type": "debug",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "late agg",
         "active": false,
         "tosidebar": true,
@@ -1545,9 +1547,9 @@
         "wires": []
     },
     {
-        "id": "ecd4c17f01dfa308",
+        "id": "f91c22110d315750",
         "type": "debug",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "too late",
         "active": true,
         "tosidebar": true,
@@ -1562,9 +1564,9 @@
         "wires": []
     },
     {
-        "id": "c935442a9e9773c5",
+        "id": "b129dafef9a8f2e0",
         "type": "debug",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "todo: aggregate",
         "active": true,
         "tosidebar": true,
@@ -1579,9 +1581,9 @@
         "wires": []
     },
     {
-        "id": "529be494a977d589",
+        "id": "1d07da5de3624763",
         "type": "function",
-        "z": "fdef74598349cbe8",
+        "z": "54a141b54b687123",
         "name": "trigger_alarm",
         "func": "function is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (context.get('last_miac') < 100) {\n    msg.payload.trigger = 'energy';\n}\nelse if (is_night_time()) {\n    msg.payload.trigger = 'time';\n}\nelse {\n    return null\n}\n\nconst data = msg.payload;\nmsg.payload = [data.dtime, data.trigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, trigger) VALUES (?, ?);\";\nreturn msg;\n",
         "outputs": 1,
@@ -1593,14 +1595,14 @@
         "y": 260,
         "wires": [
             [
-                "296f5ccc93987e6d"
+                "d725eac96ddda3b4"
             ]
         ]
     },
     {
-        "id": "3de9a66d8a07ae05",
+        "id": "fbeb04143e237fbf",
         "type": "mqtt in",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "Etot",
         "topic": "/home/day/Etot",
         "qos": "2",
@@ -1614,14 +1616,14 @@
         "y": 240,
         "wires": [
             [
-                "e96dbcf6860a47f5"
+                "fa646ec8be57e2cc"
             ]
         ]
     },
     {
-        "id": "c384d86d80a9e17a",
+        "id": "096b7e0b24b01c06",
         "type": "debug",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -1636,9 +1638,9 @@
         "wires": []
     },
     {
-        "id": "e96dbcf6860a47f5",
+        "id": "fa646ec8be57e2cc",
         "type": "function",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -1650,15 +1652,15 @@
         "y": 240,
         "wires": [
             [
-                "c384d86d80a9e17a",
-                "36b1991d71c480d9"
+                "096b7e0b24b01c06",
+                "036cedd5b6bbfe04"
             ]
         ]
     },
     {
-        "id": "cd6eb3ea78add311",
+        "id": "08a1a68bd98c6437",
         "type": "function",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO Etot(dtime, reading) VALUES ( ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -1670,28 +1672,28 @@
         "y": 160,
         "wires": [
             [
-                "07d288e064082aa6"
+                "a845165e0fe4ce6c"
             ]
         ]
     },
     {
-        "id": "07d288e064082aa6",
+        "id": "a845165e0fe4ce6c",
         "type": "mysql",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 1010,
         "y": 140,
         "wires": [
             [
-                "a99f650709583ba6"
+                "7334317bf3d33ff7"
             ]
         ]
     },
     {
-        "id": "a99f650709583ba6",
+        "id": "7334317bf3d33ff7",
         "type": "debug",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "debug 16",
         "active": false,
         "tosidebar": true,
@@ -1706,9 +1708,9 @@
         "wires": []
     },
     {
-        "id": "36b1991d71c480d9",
+        "id": "036cedd5b6bbfe04",
         "type": "switch",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -1734,15 +1736,15 @@
         "y": 440,
         "wires": [
             [
-                "cd6eb3ea78add311",
-                "6cf9e5a2f6a23797",
-                "b209a1b3d1835914"
+                "08a1a68bd98c6437",
+                "973f3921fcbdd219",
+                "399c805641804a1d"
             ],
             [
-                "4f3caec635066030"
+                "83fe9c4d4462ae37"
             ],
             [
-                "6c1eb8b39f74f05e"
+                "7c9e15ecc356d9c9"
             ]
         ],
         "outputLabels": [
@@ -1752,9 +1754,9 @@
         ]
     },
     {
-        "id": "4f3caec635066030",
+        "id": "83fe9c4d4462ae37",
         "type": "debug",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "late agg",
         "active": true,
         "tosidebar": true,
@@ -1769,9 +1771,9 @@
         "wires": []
     },
     {
-        "id": "6c1eb8b39f74f05e",
+        "id": "7c9e15ecc356d9c9",
         "type": "debug",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "too late",
         "active": true,
         "tosidebar": true,
@@ -1786,9 +1788,9 @@
         "wires": []
     },
     {
-        "id": "6cf9e5a2f6a23797",
+        "id": "973f3921fcbdd219",
         "type": "debug",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "todo: aggregate",
         "active": true,
         "tosidebar": true,
@@ -1803,9 +1805,9 @@
         "wires": []
     },
     {
-        "id": "b209a1b3d1835914",
+        "id": "399c805641804a1d",
         "type": "function",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "calculate day diff",
         "func": "if (!flow.get(\"previousEtot\")){\n    flow.set(\"previousEtot\", msg.payload.reading);\n    msg.payload.day_diff = 0;\n}else{\n    var diff = msg.payload.reading - flow.get(\"previousEtot\");\n    if (diff<0) diff=0;\n    msg.payload.day_diff = diff;\n    flow.set(\"previousEtot\", msg.payload.reading);\n}\nreturn msg;",
         "outputs": 1,
@@ -1817,14 +1819,14 @@
         "y": 420,
         "wires": [
             [
-                "3b4f76493e54f2bd"
+                "661226392c2fabf8"
             ]
         ]
     },
     {
-        "id": "3b4f76493e54f2bd",
+        "id": "661226392c2fabf8",
         "type": "function",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "insert daydiff data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.topic = \"INSERT INTO EtotDayDiff(dtime, day_diff) VALUES ( ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -1836,28 +1838,28 @@
         "y": 480,
         "wires": [
             [
-                "3ba4db592cc102ef"
+                "cac03e99e9c7a19d"
             ]
         ]
     },
     {
-        "id": "3ba4db592cc102ef",
+        "id": "cac03e99e9c7a19d",
         "type": "mysql",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 1170,
         "y": 420,
         "wires": [
             [
-                "d3d1f7876e8d9112"
+                "3c2ccb3b1d0eb463"
             ]
         ]
     },
     {
-        "id": "d3d1f7876e8d9112",
+        "id": "3c2ccb3b1d0eb463",
         "type": "debug",
-        "z": "9897c3cec5c2717d",
+        "z": "db79e7d3fca21e88",
         "name": "debug 17",
         "active": true,
         "tosidebar": true,
@@ -1872,9 +1874,9 @@
         "wires": []
     },
     {
-        "id": "654b917c1993aef4",
+        "id": "683bebca6f481aa2",
         "type": "mqtt in",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "Wtot",
         "topic": "/home/day/Wtot",
         "qos": "2",
@@ -1888,14 +1890,14 @@
         "y": 300,
         "wires": [
             [
-                "9c3e0a56a9198db3"
+                "e8418842320ffbd8"
             ]
         ]
     },
     {
-        "id": "de0696e94f9d8f57",
+        "id": "b0e0882d618a1547",
         "type": "debug",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "parsed payload",
         "active": false,
         "tosidebar": true,
@@ -1910,9 +1912,9 @@
         "wires": []
     },
     {
-        "id": "9c3e0a56a9198db3",
+        "id": "e8418842320ffbd8",
         "type": "function",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "parse data",
         "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
@@ -1924,15 +1926,15 @@
         "y": 300,
         "wires": [
             [
-                "de0696e94f9d8f57",
-                "dbb88a3332e234fc"
+                "b0e0882d618a1547",
+                "e236745429a97ed5"
             ]
         ]
     },
     {
-        "id": "6da87171565b640b",
+        "id": "df38b20d4086eae9",
         "type": "function",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "insert raw data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO Wtot(dtime, reading) VALUES ( ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -1944,28 +1946,28 @@
         "y": 220,
         "wires": [
             [
-                "3076d5bf4e4810e3"
+                "d80e3b33b8da2f7a"
             ]
         ]
     },
     {
-        "id": "3076d5bf4e4810e3",
+        "id": "d80e3b33b8da2f7a",
         "type": "mysql",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 1030,
         "y": 200,
         "wires": [
             [
-                "40d4ca6e27dcfc11"
+                "2696d98ff0d28d0c"
             ]
         ]
     },
     {
-        "id": "40d4ca6e27dcfc11",
+        "id": "2696d98ff0d28d0c",
         "type": "debug",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "debug 18",
         "active": false,
         "tosidebar": true,
@@ -1980,9 +1982,9 @@
         "wires": []
     },
     {
-        "id": "dbb88a3332e234fc",
+        "id": "e236745429a97ed5",
         "type": "switch",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "check if late",
         "property": "payload.dtime",
         "propertyType": "msg",
@@ -2008,14 +2010,14 @@
         "y": 500,
         "wires": [
             [
-                "6da87171565b640b",
-                "96c76f33e9376ff3"
+                "df38b20d4086eae9",
+                "5343ec8113ba3683"
             ],
             [
-                "6d21be507757bf92"
+                "502f83068e894bdc"
             ],
             [
-                "a6938f89787b824c"
+                "217daddcbf28bbe4"
             ]
         ],
         "outputLabels": [
@@ -2025,9 +2027,9 @@
         ]
     },
     {
-        "id": "6d21be507757bf92",
+        "id": "502f83068e894bdc",
         "type": "debug",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "late agg",
         "active": false,
         "tosidebar": true,
@@ -2042,9 +2044,9 @@
         "wires": []
     },
     {
-        "id": "a6938f89787b824c",
+        "id": "217daddcbf28bbe4",
         "type": "debug",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "too late",
         "active": false,
         "tosidebar": true,
@@ -2059,9 +2061,9 @@
         "wires": []
     },
     {
-        "id": "5bf458d8c88bfef9",
+        "id": "31a2fda15ce68fa0",
         "type": "debug",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "todo: aggregate",
         "active": true,
         "tosidebar": true,
@@ -2076,9 +2078,9 @@
         "wires": []
     },
     {
-        "id": "96c76f33e9376ff3",
+        "id": "5343ec8113ba3683",
         "type": "function",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "calculate day diff",
         "func": "if (!flow.get(\"previousWtot\")){\n    flow.set(\"previousWtot\", msg.payload.reading);\n    msg.payload.day_diff = 0;\n}else{\n    var diff=msg.payload.reading-flow.get(\"previousWtot\");\n    if (diff < 0) diff = 0;\n    msg.payload.day_diff = diff;\n    flow.set(\"previousWtot\", msg.payload.reading);\n}\nreturn msg;",
         "outputs": 1,
@@ -2090,14 +2092,14 @@
         "y": 480,
         "wires": [
             [
-                "ac86e3d65cfdc621"
+                "ec19357f9fe2f0b8"
             ]
         ]
     },
     {
-        "id": "ac86e3d65cfdc621",
+        "id": "ec19357f9fe2f0b8",
         "type": "function",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "insert daydiff data",
         "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.topic = \"INSERT INTO WtotDayDiff(dtime, day_diff) VALUES ( ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
@@ -2109,29 +2111,29 @@
         "y": 540,
         "wires": [
             [
-                "7cde1673b4605df9",
-                "5bf458d8c88bfef9"
+                "391c3fe4c6e4a107",
+                "31a2fda15ce68fa0"
             ]
         ]
     },
     {
-        "id": "7cde1673b4605df9",
+        "id": "391c3fe4c6e4a107",
         "type": "mysql",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "mydb": "28bf60a032e41c72",
         "name": "db",
         "x": 1230,
         "y": 480,
         "wires": [
             [
-                "a34dc1ec6161c8e3"
+                "308ac7b4ffd5bb62"
             ]
         ]
     },
     {
-        "id": "a34dc1ec6161c8e3",
+        "id": "308ac7b4ffd5bb62",
         "type": "debug",
-        "z": "19e583603de48a62",
+        "z": "2279f0ac8324c7e2",
         "name": "debug 19",
         "active": false,
         "tosidebar": true,

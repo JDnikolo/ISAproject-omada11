@@ -95,6 +95,11 @@ CREATE TABLE IF NOT EXISTS iot_home.Movement(
     device VARCHAR(5) NOT NULL,
     PRIMARY KEY (dtime,device)   
 );
+CREATE TABLE IF NOT EXISTS iot_home.MovementSumDay(
+    dtime DATETIME NOT NULL,
+    day_count SMALLINT UNSIGNED NOT NULL,
+    PRIMARY KEY (dtime)
+);
 CREATE TABLE IF NOT EXISTS iot_home.Alarms(
     dtime DATETIME NOT NULL,
     alarm_trigger VARCHAR(50) NOT null, --  what triggered the alarm

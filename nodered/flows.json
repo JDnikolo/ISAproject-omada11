@@ -901,7 +901,7 @@
         "wires": [
             [
                 "6db38e4fdeacc640",
-                "a98ad640210b76b2"
+                "aac1d519970aee3e"
             ],
             [
                 "d1734cbde395faf9"
@@ -951,21 +951,23 @@
         "wires": []
     },
     {
-        "id": "a98ad640210b76b2",
-        "type": "debug",
+        "id": "aac1d519970aee3e",
+        "type": "function",
         "z": "17ce1edd4d54f222",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 760,
-        "y": 360,
-        "wires": []
+        "name": "aggregation",
+        "func": "const data = msg.payload;\n\nif (!context.hvac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac.dtime, context.hvac.sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac.dtime = date;\n    context.hvac.sum = data.reading;\n    return msg;\n}\n\ncontext.hvac.sum += data.reading;\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 380,
+        "wires": [
+            [
+                "e5dc51ef21296b47"
+            ]
+        ]
     },
     {
         "id": "117b4a92f2fa0c0f",
@@ -1105,7 +1107,7 @@
         "wires": [
             [
                 "e7f4144755486f7c",
-                "3e86f6eaf3152766"
+                "6e279b895a4962f2"
             ],
             [
                 "d58fbf3bad3efd2c"
@@ -1155,21 +1157,23 @@
         "wires": []
     },
     {
-        "id": "3e86f6eaf3152766",
-        "type": "debug",
+        "id": "6e279b895a4962f2",
+        "type": "function",
         "z": "2b6ef3fbc7846079",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 780,
+        "name": "aggregation",
+        "func": "const data = msg.payload;\n\nif (!context.miac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac.dtime, context.miac.sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac.dtime = date;\n    context.miac.sum = data.reading;\n    return msg;\n}\n\ncontext.miac.sum += data.reading;\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
         "y": 400,
-        "wires": []
+        "wires": [
+            [
+                "994ce9d755b19649"
+            ]
+        ]
     },
     {
         "id": "fef2eb77b00ec407",
@@ -1479,7 +1483,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1120,
+        "x": 1140,
         "y": 80,
         "wires": []
     },
@@ -1513,8 +1517,8 @@
         "wires": [
             [
                 "779302da69427e73",
-                "b129dafef9a8f2e0",
-                "1d07da5de3624763"
+                "1d07da5de3624763",
+                "072ed7a574069170"
             ],
             [
                 "e13601e9348ae90d"
@@ -1564,23 +1568,6 @@
         "wires": []
     },
     {
-        "id": "b129dafef9a8f2e0",
-        "type": "debug",
-        "z": "54a141b54b687123",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 800,
-        "y": 360,
-        "wires": []
-    },
-    {
         "id": "1d07da5de3624763",
         "type": "function",
         "z": "54a141b54b687123",
@@ -1593,6 +1580,25 @@
         "libs": [],
         "x": 670,
         "y": 260,
+        "wires": [
+            [
+                "d725eac96ddda3b4"
+            ]
+        ]
+    },
+    {
+        "id": "072ed7a574069170",
+        "type": "function",
+        "z": "54a141b54b687123",
+        "name": "aggregation",
+        "func": "const data = msg.payload;\n\nif (!context.mv) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.mv = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.mv.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.mv.dtime, context.mv.sum];\n    msg.topic = \"INSERT INTO MovementSumDay(dtime, day_count) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.mv.dtime = date;\n    context.mv.sum = 0;\n    return msg;\n}\n\ncontext.mv.sum ++;\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 380,
         "wires": [
             [
                 "d725eac96ddda3b4"

@@ -66,7 +66,7 @@
     {
         "id": "fe78548ad9d34539",
         "type": "mqtt-broker",
-        "name": "",
+        "name": "mqtt",
         "broker": "localhost",
         "port": "1883",
         "clientid": "",
@@ -732,7 +732,7 @@
         "type": "debug",
         "z": "8efdc04156fb7903",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -938,7 +938,7 @@
         "type": "debug",
         "z": "17ce1edd4d54f222",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -955,7 +955,7 @@
         "type": "function",
         "z": "17ce1edd4d54f222",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.hvac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac.dtime, context.hvac.sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac.dtime = date;\n    context.hvac.sum = data.reading;\n    return msg;\n}\n\ncontext.hvac.sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\n\nif (!context.hvac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac.dtime, context.hvac.sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    global.set(\"last_hvac_sum\", context.hvac.sum)\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac.dtime = date;\n    context.hvac.sum = data.reading;\n    return msg;\n}\n\ncontext.hvac.sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1144,7 +1144,7 @@
         "type": "debug",
         "z": "2b6ef3fbc7846079",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1161,7 +1161,7 @@
         "type": "function",
         "z": "2b6ef3fbc7846079",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.miac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac.dtime, context.miac.sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac.dtime = date;\n    context.miac.sum = data.reading;\n    return msg;\n}\n\ncontext.miac.sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\n\nif (!context.miac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac.dtime, context.miac.sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    global.set(\"last_miac_sum\", context.miac.sum)\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac.dtime = date;\n    context.miac.sum = data.reading;\n    return msg;\n}\n\ncontext.miac.sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1258,7 +1258,7 @@
         "z": "2108fc68644b39eb",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 930,
+        "x": 950,
         "y": 140,
         "wires": [
             [
@@ -1313,13 +1313,13 @@
         "wires": [
             [
                 "7fe96812a1e882ec",
-                "99e241a914cf2e77"
+                "1fca8e69a67c4ff5"
             ],
             [
-                "333461b800bf3cfa"
+                "bcd63e241d98ebae"
             ],
             [
-                "6512695725873bb5"
+                "df51b67505e6ee68"
             ]
         ],
         "outputLabels": [
@@ -1329,55 +1329,61 @@
         ]
     },
     {
-        "id": "333461b800bf3cfa",
-        "type": "debug",
+        "id": "1fca8e69a67c4ff5",
+        "type": "function",
         "z": "2108fc68644b39eb",
-        "name": "late agg",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 760,
-        "y": 560,
-        "wires": []
+        "name": "aggregation",
+        "func": "const data = msg.payload;\n\nif (!context.water) {\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water.dtime, context.water.sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, day_sum) VALUES(?, ?);\";\n    global.set(\"last_w_sum\", context.water.sum)\n    context.yesterdayWater = {...context.water};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water.dtime = date;\n    context.water.sum = data.reading;\n    return msg;\n}\n\ncontext.water.sum += data.reading;\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 380,
+        "wires": [
+            [
+                "19be005aa505d936"
+            ]
+        ]
     },
     {
-        "id": "6512695725873bb5",
-        "type": "debug",
+        "id": "bcd63e241d98ebae",
+        "type": "function",
         "z": "2108fc68644b39eb",
-        "name": "too late",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 760,
-        "y": 620,
-        "wires": []
+        "name": "late aggregation",
+        "func": "const data = msg.payload;\n\nif (!context.yesterdayWater) {\n    const date = data.startOfYesterday;\n    context.yesterdayWater = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\ncontext.yesterdayWater.sum += data.reading;\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.device = data.device;\nmsg.payload.reading = data.reading;\nmsg.payload.sum_dtime = context.yesterdayWater.dtime;\nmsg.payload.sum = context.yesterdayWater.sum;\nmsg.topic = \"INSERT INTO Water(dtime, device, reading) VALUES ( :dtime, :device, :reading); \" +\n\"INSERT INTO WaterSumDay(dtime, day_sum) VALUES(:sum_dtime, :sum) ON DUPLICATE KEY UPDATE day_sum = :sum ;\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 540,
+        "wires": [
+            [
+                "19be005aa505d936"
+            ]
+        ]
     },
     {
-        "id": "99e241a914cf2e77",
-        "type": "debug",
+        "id": "df51b67505e6ee68",
+        "type": "function",
         "z": "2108fc68644b39eb",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 820,
-        "y": 360,
-        "wires": []
+        "name": "insert rejected",
+        "func": "const data = msg.payload;\n\nmsg.payload = [data.dtime, data.startOfDay, data.device, data.reading];\nmsg.topic = \"INSERT INTO RejectedEvents(dtime_event, dtime_received, device, reading) VALUES (?, ?, ?, ?)\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 762,
+        "y": 629,
+        "wires": [
+            [
+                "19be005aa505d936"
+            ]
+        ]
     },
     {
         "id": "81bc7faf3262997e",
@@ -1483,7 +1489,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1140,
+        "x": 1120,
         "y": 80,
         "wires": []
     },
@@ -1674,8 +1680,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 780,
-        "y": 160,
+        "x": 920,
+        "y": 120,
         "wires": [
             [
                 "a845165e0fe4ce6c"
@@ -1688,8 +1694,8 @@
         "z": "db79e7d3fca21e88",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 1010,
-        "y": 140,
+        "x": 1530,
+        "y": 200,
         "wires": [
             [
                 "7334317bf3d33ff7"
@@ -1709,8 +1715,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1220,
-        "y": 80,
+        "x": 1740,
+        "y": 140,
         "wires": []
     },
     {
@@ -1798,7 +1804,7 @@
         "type": "debug",
         "z": "db79e7d3fca21e88",
         "name": "todo: aggregate",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1806,8 +1812,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 360,
+        "x": 860,
+        "y": 320,
         "wires": []
     },
     {
@@ -1825,7 +1831,8 @@
         "y": 420,
         "wires": [
             [
-                "661226392c2fabf8"
+                "661226392c2fabf8",
+                "e56d24025c35b398"
             ]
         ]
     },
@@ -1840,44 +1847,57 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 990,
-        "y": 480,
+        "x": 1110,
+        "y": 340,
         "wires": [
             [
-                "cac03e99e9c7a19d"
+                "a845165e0fe4ce6c"
             ]
         ]
     },
     {
-        "id": "cac03e99e9c7a19d",
-        "type": "mysql",
+        "id": "e721c5ef8965cb46",
+        "type": "function",
         "z": "db79e7d3fca21e88",
-        "mydb": "28bf60a032e41c72",
-        "name": "db",
-        "x": 1170,
-        "y": 420,
+        "name": "calculate ElecDayRest",
+        "func": "const data = msg.payload;\nvar day_diff = msg.payload.day_diff;\nconst rest = day_diff-global.get(\"last_hvac_sum\")-global.get(\"last_miac_sum\");\nmsg.payload = [data.dtime, rest];\nmsg.topic = \"INSERT INTO ElecDayRest(dtime, leak_amount) VALUES ( ?, ?);\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1260,
+        "y": 520,
         "wires": [
             [
-                "3c2ccb3b1d0eb463"
+                "a845165e0fe4ce6c"
             ]
         ]
     },
     {
-        "id": "3c2ccb3b1d0eb463",
-        "type": "debug",
+        "id": "e56d24025c35b398",
+        "type": "delay",
         "z": "db79e7d3fca21e88",
-        "name": "debug 17",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1340,
-        "y": 360,
-        "wires": []
+        "name": "wait for other aggregates",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 970,
+        "y": 500,
+        "wires": [
+            [
+                "e721c5ef8965cb46"
+            ]
+        ]
     },
     {
         "id": "683bebca6f481aa2",
@@ -1962,30 +1982,13 @@
         "z": "2279f0ac8324c7e2",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 1030,
-        "y": 200,
+        "x": 1630,
+        "y": 400,
         "wires": [
             [
-                "2696d98ff0d28d0c"
+                "0ec537fb4171581e"
             ]
         ]
-    },
-    {
-        "id": "2696d98ff0d28d0c",
-        "type": "debug",
-        "z": "2279f0ac8324c7e2",
-        "name": "debug 18",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1240,
-        "y": 140,
-        "wires": []
     },
     {
         "id": "e236745429a97ed5",
@@ -2012,8 +2015,8 @@
         "checkall": "false",
         "repair": false,
         "outputs": 3,
-        "x": 590,
-        "y": 500,
+        "x": 490,
+        "y": 560,
         "wires": [
             [
                 "df38b20d4086eae9",
@@ -2045,8 +2048,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 620,
+        "x": 820,
+        "y": 740,
         "wires": []
     },
     {
@@ -2062,25 +2065,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 680,
-        "wires": []
-    },
-    {
-        "id": "31a2fda15ce68fa0",
-        "type": "debug",
-        "z": "2279f0ac8324c7e2",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1120,
-        "y": 380,
+        "x": 820,
+        "y": 800,
         "wires": []
     },
     {
@@ -2098,7 +2084,8 @@
         "y": 480,
         "wires": [
             [
-                "ec19357f9fe2f0b8"
+                "ec19357f9fe2f0b8",
+                "b38c957417dc08ca"
             ]
         ]
     },
@@ -2113,44 +2100,90 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1010,
-        "y": 540,
+        "x": 1150,
+        "y": 400,
         "wires": [
             [
-                "391c3fe4c6e4a107",
-                "31a2fda15ce68fa0"
+                "d80e3b33b8da2f7a",
+                "b6f85a404f97ab67"
             ]
         ]
     },
     {
-        "id": "391c3fe4c6e4a107",
-        "type": "mysql",
+        "id": "b38c957417dc08ca",
+        "type": "delay",
         "z": "2279f0ac8324c7e2",
-        "mydb": "28bf60a032e41c72",
-        "name": "db",
-        "x": 1230,
-        "y": 480,
+        "name": "wait for other aggregates",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 950,
+        "y": 620,
         "wires": [
             [
-                "308ac7b4ffd5bb62"
+                "1831d1b67a082b13"
             ]
         ]
     },
     {
-        "id": "308ac7b4ffd5bb62",
+        "id": "1831d1b67a082b13",
+        "type": "function",
+        "z": "2279f0ac8324c7e2",
+        "name": "calculate WaterDayRest",
+        "func": "const data = msg.payload;\nvar day_diff = msg.payload.day_diff;\nconst rest = day_diff - global.get(\"last_w_sum\");\nmsg.payload = [data.dtime, rest];\nmsg.topic = \"INSERT INTO WaterDayRest(dtime, leak_amount) VALUES ( ?, ?);\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 620,
+        "wires": [
+            [
+                "d80e3b33b8da2f7a",
+                "b6f85a404f97ab67"
+            ]
+        ]
+    },
+    {
+        "id": "0ec537fb4171581e",
         "type": "debug",
         "z": "2279f0ac8324c7e2",
-        "name": "debug 19",
+        "name": "debug 17",
         "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
+        "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1360,
-        "y": 420,
+        "x": 1740,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b6f85a404f97ab67",
+        "type": "debug",
+        "z": "2279f0ac8324c7e2",
+        "name": "debug 18",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 520,
         "wires": []
     }
 ]

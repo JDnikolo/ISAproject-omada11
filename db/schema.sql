@@ -79,12 +79,12 @@ CREATE TABLE IF NOT EXISTS iot_home.WtotDayDiff(
 
 CREATE TABLE IF NOT EXISTS iot_home.ElecDayRest(
     dtime DATETIME NOT NULL,
-    leak_amount int UNSIGNED NOT NULL,
+    leak_amount int NOT NULL,
     PRIMARY KEY (dtime)   
 );
 CREATE TABLE IF NOT EXISTS iot_home.WaterDayRest(
     dtime DATETIME NOT NULL,
-    leak_amount int UNSIGNED NOT NULL,
+    leak_amount int NOT NULL,
     PRIMARY KEY (dtime)   
 );
 
@@ -94,11 +94,6 @@ CREATE TABLE IF NOT EXISTS iot_home.Movement(
     dtime DATETIME NOT NULL,
     device VARCHAR(5) NOT NULL,
     PRIMARY KEY (dtime,device)   
-);
-CREATE TABLE IF NOT EXISTS iot_home.MovementSumDay(
-    dtime DATETIME NOT NULL,
-    day_count SMALLINT UNSIGNED NOT NULL,
-    PRIMARY KEY (dtime)
 );
 CREATE TABLE IF NOT EXISTS iot_home.Alarms(
     dtime DATETIME NOT NULL,

@@ -732,7 +732,7 @@
         "type": "debug",
         "z": "8efdc04156fb7903",
         "name": "too late",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -749,10 +749,10 @@
         "type": "function",
         "z": "8efdc04156fb7903",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.th) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.th = {\n        \"dtime\": date,\n        \"freq\": 0.0,\n        \"sum\": 0.0  \n    };\n}\n\nif (context.th.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.th.dtime, context.th.sum/context.th.freq];\n    msg.topic = \"INSERT INTO THAvgDay(dtime, day_avg) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.th.dtime = date;\n    context.th.freq = 1.0;\n    context.th.sum = data.reading;\n    return msg;\n}\n\ncontext.th.freq += 1.0;\ncontext.th.sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.th[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.th[curr_device] = {\n        \"dtime\": date,\n        \"freq\": 0.0,\n        \"sum\": 0.0  \n    };\n}\n\nif (context.th[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.th[curr_device].dtime, curr_device, context.th[curr_device].sum / context.th[curr_device].freq];\n    msg.topic = \"INSERT INTO THAvgDay(dtime, device, day_avg) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.th[curr_device].dtime = date;\n    context.th[curr_device].freq = 1.0;\n    context.th[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.th[curr_device].freq += 1.0;\ncontext.th[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.th = {};",
         "finalize": "",
         "libs": [],
         "x": 670,
@@ -938,7 +938,7 @@
         "type": "debug",
         "z": "17ce1edd4d54f222",
         "name": "too late",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -955,10 +955,10 @@
         "type": "function",
         "z": "17ce1edd4d54f222",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.hvac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac.dtime, context.hvac.sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    global.set(\"last_hvac_sum\", context.hvac.sum)\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac.dtime = date;\n    context.hvac.sum = data.reading;\n    return msg;\n}\n\ncontext.hvac.sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.hvac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac[curr_device].dtime, curr_device, context.hvac[curr_device].sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac[curr_device].dtime = date;\n    context.hvac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.hvac[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.hvac = {};",
         "finalize": "",
         "libs": [],
         "x": 710,
@@ -1144,7 +1144,7 @@
         "type": "debug",
         "z": "2b6ef3fbc7846079",
         "name": "too late",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1161,10 +1161,10 @@
         "type": "function",
         "z": "2b6ef3fbc7846079",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.miac) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac.dtime, context.miac.sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, day_sum) VALUES(?, ?);\";\n    global.set(\"last_miac_sum\", context.miac.sum)\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac.dtime = date;\n    context.miac.sum = data.reading;\n    return msg;\n}\n\ncontext.miac.sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.miac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac[curr_device].dtime, curr_device, context.miac[curr_device].sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac[curr_device].dtime = date;\n    context.miac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.miac[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.miac = {};",
         "finalize": "",
         "libs": [],
         "x": 710,
@@ -1333,10 +1333,10 @@
         "type": "function",
         "z": "2108fc68644b39eb",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.water) {\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water.dtime, context.water.sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, day_sum) VALUES(?, ?);\";\n    global.set(\"last_w_sum\", context.water.sum)\n    context.yesterdayWater = {...context.water};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water.dtime = date;\n    context.water.sum = data.reading;\n    return msg;\n}\n\ncontext.water.sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water[curr_device].dtime, curr_device, context.water[curr_device].sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = date;\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.water = {};\nif (!global.yesterdayWater) {\n    global.yesterdayWater = {};\n}",
         "finalize": "",
         "libs": [],
         "x": 730,
@@ -1352,10 +1352,10 @@
         "type": "function",
         "z": "2108fc68644b39eb",
         "name": "late aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.yesterdayWater) {\n    const date = data.startOfYesterday;\n    context.yesterdayWater = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\ncontext.yesterdayWater.sum += data.reading;\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.device = data.device;\nmsg.payload.reading = data.reading;\nmsg.payload.sum_dtime = context.yesterdayWater.dtime;\nmsg.payload.sum = context.yesterdayWater.sum;\nmsg.topic = \"INSERT INTO Water(dtime, device, reading) VALUES ( :dtime, :device, :reading); \" +\n\"INSERT INTO WaterSumDay(dtime, day_sum) VALUES(:sum_dtime, :sum) ON DUPLICATE KEY UPDATE day_sum = :sum ;\";\nreturn msg;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!global.yesterdayWater[curr_device]) {\n    const date = data.startOfYesterday;\n    global.yesterdayWater[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nglobal.yesterdayWater[curr_device].sum += data.reading;\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.device = data.device;\nmsg.payload.reading = data.reading;\nmsg.payload.sum_dtime = global.yesterdayWater[curr_device].dtime;\nmsg.payload.sum = global.yesterdayWater[curr_device].sum;\nmsg.topic = \"INSERT INTO Water(dtime, device, reading) VALUES ( :dtime, :device, :reading); \" +\n\"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(:sum_dtime, :device, :sum) ON DUPLICATE KEY UPDATE day_sum = :sum ;\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nif (!global.yesterdayWater) {\n    global.yesterdayWater = {};\n}",
         "finalize": "",
         "libs": [],
         "x": 740,
@@ -1578,7 +1578,7 @@
         "type": "function",
         "z": "54a141b54b687123",
         "name": "trigger_alarm",
-        "func": "function is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (context.get('last_miac') < 100) {\n    msg.payload.trigger = 'energy';\n}\nelse if (is_night_time()) {\n    msg.payload.trigger = 'time';\n}\nelse {\n    return null\n}\n\nconst data = msg.payload;\nmsg.payload = [data.dtime, data.trigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, trigger) VALUES (?, ?);\";\nreturn msg;\n",
+        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (global.get('last_miac') < 100) {\n    msg.payload.trigger = 'energy';\n}\nelse if (is_night_time(data.dtime)) {\n    msg.payload.trigger = 'time';\n}\nelse {\n    return null\n}\n\n\nmsg.payload = [data.dtime, data.trigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, trigger) VALUES (?, ?);\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1597,10 +1597,10 @@
         "type": "function",
         "z": "54a141b54b687123",
         "name": "aggregation",
-        "func": "const data = msg.payload;\n\nif (!context.mv) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.mv = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.mv.dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.mv.dtime, context.mv.sum];\n    msg.topic = \"INSERT INTO MovementSumDay(dtime, day_count) VALUES(?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.mv.dtime = date;\n    context.mv.sum = 0;\n    return msg;\n}\n\ncontext.mv.sum ++;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.mv[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.mv[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.mv[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.mv[curr_device].dtime, curr_device, context.mv[curr_device].sum];\n    msg.topic = \"INSERT INTO MovementSumDay(dtime, device, day_count) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.mv[curr_device].dtime = date;\n    context.mv[curr_device].sum = 0;\n    return msg;\n}\n\ncontext.mv[curr_device].sum++;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.mv = {};",
         "finalize": "",
         "libs": [],
         "x": 750,
@@ -1680,8 +1680,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 920,
-        "y": 120,
+        "x": 780,
+        "y": 160,
         "wires": [
             [
                 "a845165e0fe4ce6c"
@@ -1694,8 +1694,8 @@
         "z": "db79e7d3fca21e88",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 1530,
-        "y": 200,
+        "x": 1010,
+        "y": 140,
         "wires": [
             [
                 "7334317bf3d33ff7"
@@ -1715,8 +1715,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1740,
-        "y": 140,
+        "x": 1220,
+        "y": 80,
         "wires": []
     },
     {
@@ -1804,7 +1804,7 @@
         "type": "debug",
         "z": "db79e7d3fca21e88",
         "name": "todo: aggregate",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1812,8 +1812,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 320,
+        "x": 900,
+        "y": 360,
         "wires": []
     },
     {
@@ -1831,8 +1831,7 @@
         "y": 420,
         "wires": [
             [
-                "661226392c2fabf8",
-                "e56d24025c35b398"
+                "661226392c2fabf8"
             ]
         ]
     },
@@ -1847,57 +1846,44 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1110,
-        "y": 340,
+        "x": 990,
+        "y": 480,
         "wires": [
             [
-                "a845165e0fe4ce6c"
+                "cac03e99e9c7a19d"
             ]
         ]
     },
     {
-        "id": "e721c5ef8965cb46",
-        "type": "function",
+        "id": "cac03e99e9c7a19d",
+        "type": "mysql",
         "z": "db79e7d3fca21e88",
-        "name": "calculate ElecDayRest",
-        "func": "const data = msg.payload;\nvar day_diff = msg.payload.day_diff;\nconst rest = day_diff-global.get(\"last_hvac_sum\")-global.get(\"last_miac_sum\");\nmsg.payload = [data.dtime, rest];\nmsg.topic = \"INSERT INTO ElecDayRest(dtime, leak_amount) VALUES ( ?, ?);\";\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1260,
-        "y": 520,
+        "mydb": "28bf60a032e41c72",
+        "name": "db",
+        "x": 1170,
+        "y": 420,
         "wires": [
             [
-                "a845165e0fe4ce6c"
+                "3c2ccb3b1d0eb463"
             ]
         ]
     },
     {
-        "id": "e56d24025c35b398",
-        "type": "delay",
+        "id": "3c2ccb3b1d0eb463",
+        "type": "debug",
         "z": "db79e7d3fca21e88",
-        "name": "wait for other aggregates",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 970,
-        "y": 500,
-        "wires": [
-            [
-                "e721c5ef8965cb46"
-            ]
-        ]
+        "name": "debug 17",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 360,
+        "wires": []
     },
     {
         "id": "683bebca6f481aa2",
@@ -1982,13 +1968,30 @@
         "z": "2279f0ac8324c7e2",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 1630,
-        "y": 400,
+        "x": 1030,
+        "y": 200,
         "wires": [
             [
-                "0ec537fb4171581e"
+                "2696d98ff0d28d0c"
             ]
         ]
+    },
+    {
+        "id": "2696d98ff0d28d0c",
+        "type": "debug",
+        "z": "2279f0ac8324c7e2",
+        "name": "debug 18",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 140,
+        "wires": []
     },
     {
         "id": "e236745429a97ed5",
@@ -2015,8 +2018,8 @@
         "checkall": "false",
         "repair": false,
         "outputs": 3,
-        "x": 490,
-        "y": 560,
+        "x": 590,
+        "y": 500,
         "wires": [
             [
                 "df38b20d4086eae9",
@@ -2048,8 +2051,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 740,
+        "x": 860,
+        "y": 620,
         "wires": []
     },
     {
@@ -2065,8 +2068,25 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 800,
+        "x": 860,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "31a2fda15ce68fa0",
+        "type": "debug",
+        "z": "2279f0ac8324c7e2",
+        "name": "todo: aggregate",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 380,
         "wires": []
     },
     {
@@ -2084,8 +2104,7 @@
         "y": 480,
         "wires": [
             [
-                "ec19357f9fe2f0b8",
-                "b38c957417dc08ca"
+                "ec19357f9fe2f0b8"
             ]
         ]
     },
@@ -2100,90 +2119,44 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1150,
-        "y": 400,
+        "x": 1010,
+        "y": 540,
         "wires": [
             [
-                "d80e3b33b8da2f7a",
-                "b6f85a404f97ab67"
+                "391c3fe4c6e4a107",
+                "31a2fda15ce68fa0"
             ]
         ]
     },
     {
-        "id": "b38c957417dc08ca",
-        "type": "delay",
+        "id": "391c3fe4c6e4a107",
+        "type": "mysql",
         "z": "2279f0ac8324c7e2",
-        "name": "wait for other aggregates",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 950,
-        "y": 620,
+        "mydb": "28bf60a032e41c72",
+        "name": "db",
+        "x": 1230,
+        "y": 480,
         "wires": [
             [
-                "1831d1b67a082b13"
+                "308ac7b4ffd5bb62"
             ]
         ]
     },
     {
-        "id": "1831d1b67a082b13",
-        "type": "function",
-        "z": "2279f0ac8324c7e2",
-        "name": "calculate WaterDayRest",
-        "func": "const data = msg.payload;\nvar day_diff = msg.payload.day_diff;\nconst rest = day_diff - global.get(\"last_w_sum\");\nmsg.payload = [data.dtime, rest];\nmsg.topic = \"INSERT INTO WaterDayRest(dtime, leak_amount) VALUES ( ?, ?);\";\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1250,
-        "y": 620,
-        "wires": [
-            [
-                "d80e3b33b8da2f7a",
-                "b6f85a404f97ab67"
-            ]
-        ]
-    },
-    {
-        "id": "0ec537fb4171581e",
+        "id": "308ac7b4ffd5bb62",
         "type": "debug",
         "z": "2279f0ac8324c7e2",
-        "name": "debug 17",
+        "name": "debug 19",
         "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "payload",
+        "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1740,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "b6f85a404f97ab67",
-        "type": "debug",
-        "z": "2279f0ac8324c7e2",
-        "name": "debug 18",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1300,
-        "y": 520,
+        "x": 1360,
+        "y": 420,
         "wires": []
     }
 ]

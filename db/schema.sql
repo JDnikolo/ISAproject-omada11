@@ -12,8 +12,9 @@ create table if not exists iot_home.TH(
 );
 create table if not exists iot_home.THAvgDay(
     dtime datetime not null,
+    device varchar(5) not null,
     day_avg decimal(6,3) not null,
-    primary key (dtime)
+    primary key (dtime,device)
 );
 -- HVAC[1,2]
 create table if not exists iot_home.HVAC(
@@ -24,19 +25,22 @@ create table if not exists iot_home.HVAC(
 );
 create table if not exists iot_home.HVACSumDay(
     dtime datetime not null,
+    device varchar(5) not null,
     day_sum int unsigned not null,
-    primary key (dtime));
+    primary key (dtime,device)
+);
 -- MiAC[1,2]
 CREATE TABLE IF NOT EXISTS iot_home.MIAC(
     dtime DATETIME NOT NULL,
     device VARCHAR(5) NOT NULL,
     reading SMALLINT UNSIGNED NOT NULL,
-    PRIMARY KEY (dtime,device)
+    primary key (dtime,device)
 );
 CREATE TABLE IF NOT EXISTS iot_home.MIACSumDay(
     dtime DATETIME NOT NULL,
+    device varchar(5) not null,
     day_sum SMALLINT UNSIGNED NOT NULL,
-    PRIMARY KEY (dtime)
+    primary key (dtime,device)
 );
 -- W1
 CREATE TABLE IF NOT EXISTS iot_home.Water(
@@ -47,8 +51,9 @@ CREATE TABLE IF NOT EXISTS iot_home.Water(
 );
 CREATE TABLE IF NOT EXISTS iot_home.WaterSumDay(
     dtime DATETIME NOT NULL,
+    device varchar(5) not null,
     day_sum DECIMAL(6,3) NOT NULL,
-    PRIMARY KEY (dtime)   
+    primary key (dtime,device)
 );
 
 -- daily sensors and diff aggregates-- 

@@ -94,7 +94,7 @@
         "id": "28bf60a032e41c72",
         "type": "MySQLdatabase",
         "name": "iot_home",
-        "host": "127.0.0.1",
+        "host": "localhost",
         "port": "3306",
         "db": "iot_home",
         "tz": "",
@@ -955,7 +955,7 @@
         "type": "function",
         "z": "17ce1edd4d54f222",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.hvac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac[curr_device].dtime, curr_device, context.hvac[curr_device].sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac[curr_device].dtime = date;\n    context.hvac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.hvac[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.hvac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac[curr_device].dtime, curr_device, context.hvac[curr_device].sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_hvac_sum\", global.get(\"last_hvac_sum\")+context.hvac[curr_device].sum);\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac[curr_device].dtime = date;\n    context.hvac[curr_device].sum = data.reading;\n    return msg;\n}\ncontext.hvac[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.hvac = {};",
@@ -1161,7 +1161,7 @@
         "type": "function",
         "z": "2b6ef3fbc7846079",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.miac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac[curr_device].dtime, curr_device, context.miac[curr_device].sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac[curr_device].dtime = date;\n    context.miac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.miac[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.miac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac[curr_device].dtime, curr_device, context.miac[curr_device].sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_miac_sum\", global.get(\"last_miac_sum\") + context.miac[curr_device].sum);\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac[curr_device].dtime = date;\n    context.miac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.miac[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.miac = {};",
@@ -1333,7 +1333,7 @@
         "type": "function",
         "z": "2108fc68644b39eb",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water[curr_device].dtime, curr_device, context.water[curr_device].sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = date;\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water[curr_device].dtime, curr_device, context.water[curr_device].sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_w_sum\", global.get(\"last_w_sum\") + context.water[curr_device].sum);\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = date;\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.water = {};\nif (!global.yesterdayWater) {\n    global.yesterdayWater = {};\n}",
@@ -1359,7 +1359,7 @@
         "finalize": "",
         "libs": [],
         "x": 740,
-        "y": 540,
+        "y": 480,
         "wires": [
             [
                 "19be005aa505d936"
@@ -1578,7 +1578,7 @@
         "type": "function",
         "z": "54a141b54b687123",
         "name": "trigger_alarm",
-        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (global.get('last_miac') < 100) {\n    msg.payload.trigger = 'energy';\n}\nelse if (is_night_time(data.dtime)) {\n    msg.payload.trigger = 'time';\n}\nelse {\n    return null\n}\n\n\nmsg.payload = [data.dtime, data.trigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, trigger) VALUES (?, ?);\";\nreturn msg;\n",
+        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (global.get('last_miac') < 100) {\n    msg.payload.trigger = 'energy';\n}\nelse if (is_night_time(data.dtime)) {\n    msg.payload.trigger = 'time';\n}\nelse {\n    return null\n}\n\n\nmsg.payload = [data.dtime, data.trigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (?, ?);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1749,7 +1749,6 @@
         "wires": [
             [
                 "08a1a68bd98c6437",
-                "973f3921fcbdd219",
                 "399c805641804a1d"
             ],
             [
@@ -1770,7 +1769,7 @@
         "type": "debug",
         "z": "db79e7d3fca21e88",
         "name": "late agg",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1787,7 +1786,7 @@
         "type": "debug",
         "z": "db79e7d3fca21e88",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1800,38 +1799,22 @@
         "wires": []
     },
     {
-        "id": "973f3921fcbdd219",
-        "type": "debug",
-        "z": "db79e7d3fca21e88",
-        "name": "todo: aggregate",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 900,
-        "y": 360,
-        "wires": []
-    },
-    {
         "id": "399c805641804a1d",
         "type": "function",
         "z": "db79e7d3fca21e88",
-        "name": "calculate day diff",
-        "func": "if (!flow.get(\"previousEtot\")){\n    flow.set(\"previousEtot\", msg.payload.reading);\n    msg.payload.day_diff = 0;\n}else{\n    var diff = msg.payload.reading - flow.get(\"previousEtot\");\n    if (diff<0) diff=0;\n    msg.payload.day_diff = diff;\n    flow.set(\"previousEtot\", msg.payload.reading);\n}\nreturn msg;",
+        "name": "calculate Etot day diff",
+        "func": "if (!flow.get(\"previousEtot\")){\n    flow.set(\"previousEtot\", msg.payload.reading);\n    msg.payload.day_diff = msg.payload.reading;\n}else{\n    var diff = msg.payload.reading - flow.get(\"previousEtot\");\n    msg.payload.day_diff = diff;\n    flow.set(\"previousEtot\", msg.payload.reading);\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nflow.set(\"previousEtot\", 0)",
         "finalize": "",
         "libs": [],
-        "x": 830,
+        "x": 840,
         "y": 420,
         "wires": [
             [
-                "661226392c2fabf8"
+                "661226392c2fabf8",
+                "ae1a1e58f122c177"
             ]
         ]
     },
@@ -1846,11 +1829,12 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 990,
+        "x": 1090,
         "y": 480,
         "wires": [
             [
-                "cac03e99e9c7a19d"
+                "cac03e99e9c7a19d",
+                "3c2ccb3b1d0eb463"
             ]
         ]
     },
@@ -1860,8 +1844,8 @@
         "z": "db79e7d3fca21e88",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 1170,
-        "y": 420,
+        "x": 1390,
+        "y": 380,
         "wires": [
             [
                 "3c2ccb3b1d0eb463"
@@ -1881,9 +1865,54 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1340,
-        "y": 360,
+        "x": 1620,
+        "y": 440,
         "wires": []
+    },
+    {
+        "id": "6e83b1a3feb72ca0",
+        "type": "function",
+        "z": "db79e7d3fca21e88",
+        "name": "insert leak data",
+        "func": "const data = msg.payload;\nvar day_diff = msg.payload.day_diff;\nconst rest = day_diff - global.get(\"last_hvac_sum\") - global.get(\"last_miac_sum\");\nmsg.payload = [data.dtime,rest];\nmsg.topic =  \"INSERT INTO ElecDayRest(dtime, leak_amount) VALUES ( ?, ?);\";\nglobal.set(\"last_hvac_sum\", 0);\nglobal.set(\"last_miac_sum\", 0);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set(\"last_hvac_sum\",0);\nglobal.set(\"last_miac_sum\",0);",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 580,
+        "wires": [
+            [
+                "cac03e99e9c7a19d",
+                "3c2ccb3b1d0eb463"
+            ]
+        ]
+    },
+    {
+        "id": "ae1a1e58f122c177",
+        "type": "delay",
+        "z": "db79e7d3fca21e88",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1060,
+        "y": 620,
+        "wires": [
+            [
+                "6e83b1a3feb72ca0"
+            ]
+        ]
     },
     {
         "id": "683bebca6f481aa2",
@@ -2077,7 +2106,7 @@
         "type": "debug",
         "z": "2279f0ac8324c7e2",
         "name": "todo: aggregate",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -2085,26 +2114,27 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1120,
-        "y": 380,
+        "x": 1220,
+        "y": 360,
         "wires": []
     },
     {
         "id": "5343ec8113ba3683",
         "type": "function",
         "z": "2279f0ac8324c7e2",
-        "name": "calculate day diff",
-        "func": "if (!flow.get(\"previousWtot\")){\n    flow.set(\"previousWtot\", msg.payload.reading);\n    msg.payload.day_diff = 0;\n}else{\n    var diff=msg.payload.reading-flow.get(\"previousWtot\");\n    if (diff < 0) diff = 0;\n    msg.payload.day_diff = diff;\n    flow.set(\"previousWtot\", msg.payload.reading);\n}\nreturn msg;",
+        "name": "calculate Wtot day diff",
+        "func": "if (!flow.get(\"previousWtot\")){\n    flow.set(\"previousWtot\", msg.payload.reading);\n    msg.payload.day_diff = msg.payload.reading;\n}else{\n    var diff=msg.payload.reading-flow.get(\"previousWtot\");\n    msg.payload.day_diff = diff;\n    flow.set(\"previousWtot\", msg.payload.reading);\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nflow.set(\"previousWtot\",0)",
         "finalize": "",
         "libs": [],
-        "x": 850,
+        "x": 860,
         "y": 480,
         "wires": [
             [
-                "ec19357f9fe2f0b8"
+                "ec19357f9fe2f0b8",
+                "5a77d64bc0351277"
             ]
         ]
     },
@@ -2119,8 +2149,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1010,
-        "y": 540,
+        "x": 1110,
+        "y": 520,
         "wires": [
             [
                 "391c3fe4c6e4a107",
@@ -2134,8 +2164,8 @@
         "z": "2279f0ac8324c7e2",
         "mydb": "28bf60a032e41c72",
         "name": "db",
-        "x": 1230,
-        "y": 480,
+        "x": 1370,
+        "y": 460,
         "wires": [
             [
                 "308ac7b4ffd5bb62"
@@ -2155,8 +2185,52 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1360,
-        "y": 420,
+        "x": 1500,
+        "y": 400,
         "wires": []
+    },
+    {
+        "id": "5a77d64bc0351277",
+        "type": "delay",
+        "z": "2279f0ac8324c7e2",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1080,
+        "y": 640,
+        "wires": [
+            [
+                "a4e6a7ef4bcb8c84"
+            ]
+        ]
+    },
+    {
+        "id": "a4e6a7ef4bcb8c84",
+        "type": "function",
+        "z": "2279f0ac8324c7e2",
+        "name": "insert leak data",
+        "func": "const data = msg.payload;\nvar day_diff = msg.payload.day_diff;\nconst rest = day_diff - global.get(\"last_w_sum\");\nmsg.payload = [data.dtime,rest];\nmsg.topic =  \"INSERT INTO WaterDayRest(dtime, leak_amount) VALUES ( ?, ?);\";\nglobal.set(\"last_w_sum\", 0);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set(\"last_w_sum\", 0);",
+        "finalize": "",
+        "libs": [],
+        "x": 1300,
+        "y": 600,
+        "wires": [
+            [
+                "391c3fe4c6e4a107"
+            ]
+        ]
     }
 ]

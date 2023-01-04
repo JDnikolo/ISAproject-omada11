@@ -50,13 +50,13 @@ def send_readings(start:datetime = datetime.datetime.now(),\
         ## Generate W1 late data every 20 seconds and append
         if i%20==0:
             print("Generating late W1 data.")
-            W1data = generateW1(time=current_time-datetime.timedelta(days=1,seconds=random.randint(0,60),minutes=random.randint(0,10)))
+            W1data = generateW1(time=current_time-datetime.timedelta(days=1,seconds=random.randint(1,60),minutes=random.randint(0,10)))
             messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
             "payload":W1data})
         ## Generate VERY late W1 data every 120 seconds and append
         if i%120==0:
             print("Generating VERY late W1 data.")
-            W1data = generateW1(time=current_time-datetime.timedelta(days=10,seconds=random.randint(0,60),minutes=random.randint(0,10)))
+            W1data = generateW1(time=current_time-datetime.timedelta(days=10,seconds=random.randint(1,60),minutes=random.randint(0,13)))
             messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
             "payload":W1data})
         ## Randomly generate Mov1 readings and append

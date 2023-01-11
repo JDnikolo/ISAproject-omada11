@@ -1032,7 +1032,7 @@
         "type": "function",
         "z": "2e36b118dae2e5e9",
         "name": "insert raw data",
-        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\ncontext.set('last_miac', data.reading);\nmsg.topic = \"INSERT INTO MiAC(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
+        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.device, data.reading];\nglobal.set('last_miac', data.reading);\nmsg.topic = \"INSERT INTO MiAC(dtime, device, reading) VALUES ( ?, ?, ?);\" ;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1192,7 +1192,7 @@
         "y": 240,
         "wires": [
             [
-                "5effcd25d657b324"
+                "0f703b51cd4bf98d"
             ]
         ]
     },
@@ -1201,7 +1201,7 @@
         "type": "debug",
         "z": "3b6e589a771e1dc9",
         "name": "parsed payload",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1212,26 +1212,6 @@
         "x": 440,
         "y": 140,
         "wires": []
-    },
-    {
-        "id": "5effcd25d657b324",
-        "type": "function",
-        "z": "3b6e589a771e1dc9",
-        "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 330,
-        "y": 240,
-        "wires": [
-            [
-                "4a77cfe8bf53869f",
-                "0289d0a16de4cafe"
-            ]
-        ]
     },
     {
         "id": "a7abb036049aee2f",
@@ -1313,7 +1293,7 @@
         "wires": [
             [
                 "a7abb036049aee2f",
-                "e98e0d59b7501dc3"
+                "0637ba7596e653c8"
             ],
             [
                 "717d02db82f5f36c"
@@ -1326,25 +1306,6 @@
             "not late",
             "late agg",
             "too late"
-        ]
-    },
-    {
-        "id": "e98e0d59b7501dc3",
-        "type": "function",
-        "z": "3b6e589a771e1dc9",
-        "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water[curr_device].dtime, curr_device, context.water[curr_device].sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_w_sum\", global.get(\"last_w_sum\") + context.water[curr_device].sum);\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = date;\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.water = {};\nif (!global.yesterdayWater) {\n    global.yesterdayWater = {};\n}",
-        "finalize": "",
-        "libs": [],
-        "x": 730,
-        "y": 380,
-        "wires": [
-            [
-                "605b55b6e68230b7"
-            ]
         ]
     },
     {
@@ -1379,6 +1340,45 @@
         "libs": [],
         "x": 762,
         "y": 629,
+        "wires": [
+            [
+                "605b55b6e68230b7"
+            ]
+        ]
+    },
+    {
+        "id": "0f703b51cd4bf98d",
+        "type": "function",
+        "z": "3b6e589a771e1dc9",
+        "name": "parse data",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nif (date > context.get(\"startOfDay\")) {\n    const temp_date = new Date(date.getFullYear(),\n        date.getMonth(),\n        date.getDate(),);\n    context.set(\"startOfDay\", temp_date); \n}\n// const startOfDay = new Date();\nconst startOfDay = new Date(context.get(\"startOfDay\"));\n// startOfDay.setHours(0, 0, 0, 0);\n// const startOfYesterday = new Date();\nconst startOfYesterday = new Date(context.get(\"startOfDay\"));\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\n// startOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nconst date = new Date();\ndate.setHours(0,0,0,0);\ncontext.set(\"startOfDay\", date);",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 260,
+        "wires": [
+            [
+                "4a77cfe8bf53869f",
+                "0289d0a16de4cafe"
+            ]
+        ]
+    },
+    {
+        "id": "0637ba7596e653c8",
+        "type": "function",
+        "z": "3b6e589a771e1dc9",
+        "name": "aggregation",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = new Date(data.dtime.getTime());\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water[curr_device].dtime, curr_device, context.water[curr_device].sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_w_sum\", global.get(\"last_w_sum\") + context.water[curr_device].sum);\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = new Date(date.getTime());\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.water = {};\nif (!global.yesterdayWater) {\n    global.yesterdayWater = {};\n}",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 380,
         "wires": [
             [
                 "605b55b6e68230b7"
@@ -1578,7 +1578,7 @@
         "type": "function",
         "z": "aa04602ce2e06356",
         "name": "trigger_alarm",
-        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\nif (global.get('last_miac') < 100) {\n    data.alarmTrigger = 'energy';\n}\nelse if (is_night_time(data.dtime)) {\n    data.alarmTrigger = 'time';\n}\nelse {\n    return null\n}\n\n\nmsg.payload = [data.dtime, data.alarmTrigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (?, ?);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
+        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\ndata.alarmTrigger = ''\nif (global.get('last_miac') < 100) {\n    data.alarmTrigger += 'Energy';\n}\nelse if (is_night_time(data.dtime)) {\n    data.alarmTrigger += 'Time';\n}\nelse {\n    return null\n}\n\n\nmsg.payload = [data.dtime, data.alarmTrigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (?, ?);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1617,7 +1617,7 @@
         "type": "debug",
         "z": "aa04602ce2e06356",
         "name": "debug 20",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,

@@ -1578,7 +1578,7 @@
         "type": "function",
         "z": "aa04602ce2e06356",
         "name": "trigger_alarm",
-        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\ndata.alarmTrigger = ''\nif (global.get('last_miac') < 100) {\n    data.alarmTrigger += 'Energy';\n}\nif (is_night_time(data.dtime)) {\n    data.alarmTrigger += 'Time';\n}\nelse if (data.alarmTrigger == ''){\n    return null\n}\n\n\nmsg.payload = [data.dtime, data.alarmTrigger];\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (?, ?);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
+        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\ndata.alarmTrigger = ''\nif (global.get('last_miac') < 100) {\n    data.alarmTrigger += 'Energy';\n}\nif (is_night_time(data.dtime)) {\n    data.alarmTrigger += 'Time';\n}\nelse if (data.alarmTrigger == ''){\n    return null\n}\n\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.alarmTrigger = data.alarmTrigger;\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (:dtime, :alarmTrigger);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1589,7 +1589,8 @@
         "wires": [
             [
                 "8420f560bedb7ea8",
-                "86237b2c06af7414"
+                "86237b2c06af7414",
+                "1c40f9a5141780ac"
             ]
         ]
     },
@@ -1627,6 +1628,65 @@
         "statusType": "auto",
         "x": 1070,
         "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d0cd53ec7141bb75",
+        "type": "http request",
+        "z": "aa04602ce2e06356",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/alarm",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1210,
+        "y": 240,
+        "wires": [
+            [
+                "768afb335fd483fb"
+            ]
+        ]
+    },
+    {
+        "id": "1c40f9a5141780ac",
+        "type": "function",
+        "z": "aa04602ce2e06356",
+        "name": "prepare request",
+        "func": "const data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"alarm_trigger\": data.alarmTrigger\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 240,
+        "wires": [
+            [
+                "d0cd53ec7141bb75"
+            ]
+        ]
+    },
+    {
+        "id": "768afb335fd483fb",
+        "type": "debug",
+        "z": "aa04602ce2e06356",
+        "name": "debug 21",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1320,
+        "y": 440,
         "wires": []
     },
     {

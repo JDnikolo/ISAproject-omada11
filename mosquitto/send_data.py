@@ -1,7 +1,10 @@
+from sys import argv
 from time import sleep
 import paho.mqtt.publish as pub
 import json,datetime
 from generate_data import *
+import math
+import argparse
 
 def send_data(data,topic="test/",address="localhost"):
     assert type(topic)==str
@@ -12,18 +15,20 @@ def send_data(data,topic="test/",address="localhost"):
     pld = j
     pub.single(topic,pld,hostname=address)
 
-def send_readings(start:datetime = datetime.datetime.now(),\
+def send_readings(stop:int = math.inf, step:int=1, start:datetime = datetime.datetime.now(),\
     address="localhost",homeTopic="/home",
-    quarterTopic="/15min",dayTopic="/day",moveSensorTopic = "/movement",withSleep=True):
+    quarterTopic="/15min",dayTopic="/day",moveSensorTopic = "/movement",
+    withSleep=True, delay:float=1.0):
     th1 = 20
     th2 = 20
     Etot = 0
     Wtot = 0
     movTriggered=0
-    i=1
+    i=0
     start_time=datetime.datetime(start.year,start.month,start.day)
     current_time=start_time
-    while True:
+    current_day = current_time.day
+    while i<=stop*step:
         messages=[]
         # print(current_time)
         ## Generate TH[1,2] data using previous readings and append
@@ -68,7 +73,7 @@ def send_readings(start:datetime = datetime.datetime.now(),\
             print(f"Triggered Mov1. Times today: {movTriggered}")
         ## on the final reading for each day, generate daily
         ## sensor readings and append
-        if current_time.hour==23 and current_time.minute>=45:
+        if current_day != current_time.day:
             print("Generating daily meter data.")
             Etot,Etotdata = generateEtot(Etot,time=current_time)
             messages.append({"topic":homeTopic+dayTopic+"/Etot",\
@@ -77,13 +82,15 @@ def send_readings(start:datetime = datetime.datetime.now(),\
             messages.append({"topic":homeTopic+dayTopic+"/Wtot",\
                 "payload":Wtotdata})  
             ## Reset times Mov1 was triggered
-            movTriggered = 0      
+            movTriggered = 0
+            current_day=current_time.day      
         #print(messages)
         pub.multiple(messages,hostname=address)
         if withSleep:
-            sleep(1)
-        i+=1
+            sleep(delay)
+        i+=step
         current_time = start_time+datetime.timedelta(minutes=15*i)
+
 
 
 def send_daily_only(start:datetime = datetime.datetime.now(),\
@@ -115,4 +122,13 @@ def send_daily_only(start:datetime = datetime.datetime.now(),\
         print(current_time,end='\r')
 
 if __name__=="__main__":
-    send_readings()
+    parser = argparse.ArgumentParser(description="Generate meter readings.")
+    parser.add_argument('-amount',dest="a",help="the amount of 15-minute readings to be generated (default: infinite)",
+    default=math.inf,type=int)
+    parser.add_argument('-step',dest="s",help="the amount of 15-minute step(s) taken after generation (default: 1)",
+    default=1,type=int)
+    parser.add_argument('-wait',dest="w",help="the delay in seconds between steps (default: 1.0)",
+    default=1.0,type=float)
+    args=parser.parse_args()
+    send_readings(stop=args.a,step=args.s,delay=args.w)
+        

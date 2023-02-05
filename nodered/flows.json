@@ -749,7 +749,7 @@
         "type": "function",
         "z": "bff1f3727cbb6489",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.th[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.th[curr_device] = {\n        \"dtime\": date,\n        \"freq\": 0.0,\n        \"sum\": 0.0  \n    };\n}\n\nif (context.th[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.th[curr_device].dtime, curr_device, context.th[curr_device].sum / context.th[curr_device].freq];\n    msg.topic = \"INSERT INTO THAvgDay(dtime, device, day_avg) VALUES(?, ?, ?);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.th[curr_device].dtime = date;\n    context.th[curr_device].freq = 1.0;\n    context.th[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.th[curr_device].freq += 1.0;\ncontext.th[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.th[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.th[curr_device] = {\n        \"dtime\": date,\n        \"freq\": 0.0,\n        \"sum\": 0.0  \n    };\n}\n\nif (context.th[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = {};\n    msg.payload.dtime = context.th[curr_device].dtime;\n    msg.payload.curr_device =  curr_device;\n    msg.payload.sum = context.th[curr_device].sum / context.th[curr_device].freq;\n    msg.topic = \"INSERT INTO THAvgDay(dtime, device, day_avg) VALUES(:dtime, :curr_device, :sum);\";\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.th[curr_device].dtime = date;\n    context.th[curr_device].freq = 1.0;\n    context.th[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.th[curr_device].freq += 1.0;\ncontext.th[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.th = {};",
@@ -759,7 +759,49 @@
         "y": 320,
         "wires": [
             [
-                "907dfe7d9587e21f"
+                "907dfe7d9587e21f",
+                "6e2ad6de53427dd0"
+            ]
+        ]
+    },
+    {
+        "id": "2614eac0141f18b0",
+        "type": "http request",
+        "z": "bff1f3727cbb6489",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/aggregation",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1130,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6e2ad6de53427dd0",
+        "type": "function",
+        "z": "bff1f3727cbb6489",
+        "name": "prepare request",
+        "func": "if (!msg) {\n    return null;\n}\nconst data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"curr_device\": data.curr_device,\n    \"aggregation_type\": \"Average\",\n    \"aggregation\": data.sum,\n    \"device_type\": \"Temperature (°C)\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 320,
+        "wires": [
+            [
+                "2614eac0141f18b0"
             ]
         ]
     },
@@ -955,7 +997,7 @@
         "type": "function",
         "z": "47c687530406e599",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.hvac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac[curr_device].dtime, curr_device, context.hvac[curr_device].sum];\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_hvac_sum\", global.get(\"last_hvac_sum\")+context.hvac[curr_device].sum);\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac[curr_device].dtime = date;\n    context.hvac[curr_device].sum = data.reading;\n    return msg;\n}\ncontext.hvac[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.hvac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.hvac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.hvac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.hvac[curr_device].dtime, curr_device, context.hvac[curr_device].sum];\n    msg.payload = {};\n    msg.payload.dtime = context.hvac[curr_device].dtime;\n    msg.payload.curr_device = curr_device;\n    msg.payload.sum = context.hvac[curr_device].sum;\n    msg.topic = \"INSERT INTO HVACSumDay(dtime, device, day_sum) VALUES(:dtime, :curr_device, :sum);\";\n    global.set(\"last_hvac_sum\", global.get(\"last_hvac_sum\")+context.hvac[curr_device].sum);\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.hvac[curr_device].dtime = date;\n    context.hvac[curr_device].sum = data.reading;\n    return msg;\n}\ncontext.hvac[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.hvac = {};",
@@ -966,6 +1008,47 @@
         "wires": [
             [
                 "7ae41774c60ba770"
+            ]
+        ]
+    },
+    {
+        "id": "a12218258998fc98",
+        "type": "http request",
+        "z": "47c687530406e599",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/aggregation",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1130,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9720ebbcd9dea886",
+        "type": "function",
+        "z": "47c687530406e599",
+        "name": "prepare request",
+        "func": "if (!msg) {\n    return null;\n}\nconst data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"curr_device\": data.curr_device,\n    \"aggregation_type\": \"Daily Summary\",\n    \"aggregation\": data.sum,\n    \"device_type\": \"Air Condition Power Consumption (W)\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 380,
+        "wires": [
+            [
+                "a12218258998fc98"
             ]
         ]
     },
@@ -1631,30 +1714,6 @@
         "wires": []
     },
     {
-        "id": "d0cd53ec7141bb75",
-        "type": "http request",
-        "z": "aa04602ce2e06356",
-        "name": "",
-        "method": "POST",
-        "ret": "txt",
-        "paytoqs": "ignore",
-        "url": "http://127.0.0.1:5000/alarm",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 1210,
-        "y": 240,
-        "wires": [
-            [
-                "768afb335fd483fb"
-            ]
-        ]
-    },
-    {
         "id": "1c40f9a5141780ac",
         "type": "function",
         "z": "aa04602ce2e06356",
@@ -1678,7 +1737,7 @@
         "type": "debug",
         "z": "aa04602ce2e06356",
         "name": "debug 21",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1688,6 +1747,30 @@
         "x": 1320,
         "y": 440,
         "wires": []
+    },
+    {
+        "id": "d0cd53ec7141bb75",
+        "type": "http request",
+        "z": "aa04602ce2e06356",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/alarm",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1210,
+        "y": 240,
+        "wires": [
+            [
+                "768afb335fd483fb"
+            ]
+        ]
     },
     {
         "id": "af7fb6bdab0c4f4d",

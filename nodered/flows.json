@@ -1007,7 +1007,8 @@
         "y": 380,
         "wires": [
             [
-                "7ae41774c60ba770"
+                "7ae41774c60ba770",
+                "9720ebbcd9dea886"
             ]
         ]
     },
@@ -1244,7 +1245,7 @@
         "type": "function",
         "z": "2e36b118dae2e5e9",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.miac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.miac[curr_device].dtime, curr_device, context.miac[curr_device].sum];\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_miac_sum\", global.get(\"last_miac_sum\") + context.miac[curr_device].sum);\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac[curr_device].dtime = date;\n    context.miac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.miac[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\nif (!context.miac[curr_device]) {\n    const date = data.dtime;\n    date.setHours(0,0,0,0);\n    context.miac[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0\n    };\n}\n\nif (context.miac[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = {};\n    msg.payload.dtime = context.miac[curr_device].dtime;\n    msg.payload.curr_device = curr_device;\n    msg.payload.sum = context.miac[curr_device].sum;\n    msg.topic = \"INSERT INTO MIACSumDay(dtime, device, day_sum) VALUES(:dtime, curr_device, sum);\";\n    global.set(\"last_miac_sum\", global.get(\"last_miac_sum\") + context.miac[curr_device].sum);\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.miac[curr_device].dtime = date;\n    context.miac[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.miac[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.miac = {};",
@@ -1254,7 +1255,49 @@
         "y": 400,
         "wires": [
             [
-                "95d18e1441c43ff3"
+                "95d18e1441c43ff3",
+                "bdfbd1eec35669b4"
+            ]
+        ]
+    },
+    {
+        "id": "3a6c8f1e966d7ca8",
+        "type": "http request",
+        "z": "2e36b118dae2e5e9",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/aggregation",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1150,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bdfbd1eec35669b4",
+        "type": "function",
+        "z": "2e36b118dae2e5e9",
+        "name": "prepare request",
+        "func": "if (!msg) {\n    return null;\n}\nconst data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"curr_device\": data.curr_device,\n    \"aggregation_type\": \"Daily Summary\",\n    \"aggregation\": data.sum,\n    \"device_type\": \"Miscellaneous Power Consumption (W)\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 400,
+        "wires": [
+            [
+                "3a6c8f1e966d7ca8"
             ]
         ]
     },
@@ -1454,7 +1497,7 @@
         "type": "function",
         "z": "3b6e589a771e1dc9",
         "name": "aggregation",
-        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = new Date(data.dtime.getTime());\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = [context.water[curr_device].dtime, curr_device, context.water[curr_device].sum];\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(?, ?, ?);\";\n    global.set(\"last_w_sum\", global.get(\"last_w_sum\") + context.water[curr_device].sum);\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = new Date(date.getTime());\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
+        "func": "const data = msg.payload;\nconst curr_device = data.device;\n\nif (!context.water[curr_device]) {\n    const date = new Date(data.dtime.getTime());\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device] = {\n        \"dtime\": date,\n        \"sum\": 0.0\n    };\n}\n\nif (context.water[curr_device].dtime.getDate() != data.dtime.getDate()) {\n    msg.payload = {};\n    msg.payload.dtime = context.water[curr_device].dtime;\n    msg.payload.curr_device = curr_device;\n    msg.payload.sum = context.water[curr_device].sum;\n    msg.topic = \"INSERT INTO WaterSumDay(dtime, device, day_sum) VALUES(:dtime, :device, sum);\";\n    global.set(\"last_w_sum\", global.get(\"last_w_sum\") + context.water[curr_device].sum);\n    global.yesterdayWater[curr_device] = {...context.water[curr_device]};\n    const date = data.dtime;\n    date.setHours(0, 0, 0, 0);\n    context.water[curr_device].dtime = new Date(date.getTime());\n    context.water[curr_device].sum = data.reading;\n    return msg;\n}\n\ncontext.water[curr_device].sum += data.reading;\nreturn null;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.water = {};\nif (!global.yesterdayWater) {\n    global.yesterdayWater = {};\n}",
@@ -1464,7 +1507,49 @@
         "y": 380,
         "wires": [
             [
-                "605b55b6e68230b7"
+                "605b55b6e68230b7",
+                "b456c0b0257ed2a0"
+            ]
+        ]
+    },
+    {
+        "id": "641b848d008b7d59",
+        "type": "http request",
+        "z": "3b6e589a771e1dc9",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/aggregation",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1210,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b456c0b0257ed2a0",
+        "type": "function",
+        "z": "3b6e589a771e1dc9",
+        "name": "prepare request",
+        "func": "if (!msg) {\n    return null;\n}\nconst data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"curr_device\": data.curr_device,\n    \"aggregation_type\": \"Daily Summary\",\n    \"aggregation\": data.sum,\n    \"device_type\": \"Water Consumption (lt)\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 380,
+        "wires": [
+            [
+                "641b848d008b7d59"
             ]
         ]
     },
@@ -1661,7 +1746,7 @@
         "type": "function",
         "z": "aa04602ce2e06356",
         "name": "trigger_alarm",
-        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\ndata.alarmTrigger = ''\nif (global.get('last_miac') < 100) {\n    data.alarmTrigger += 'Energy';\n}\nif (is_night_time(data.dtime)) {\n    data.alarmTrigger += 'Time';\n}\nelse if (data.alarmTrigger == ''){\n    return null\n}\n\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.alarmTrigger = data.alarmTrigger;\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (:dtime, :alarmTrigger);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
+        "func": "const data = msg.payload;\n\nfunction is_night_time(dtime) {\n    const date = new Date(dtime);\n    const hour = date.getHours();\n    const minutes = date.getMinutes();\n    return (hour >= 2 && (hour <=5 || (hour == 6 && minutes == 0)));\n}\n\ndata.alarmTrigger = ''\nif (global.get('last_miac') < 100) {\n    data.alarmTrigger = 'Energy';\n}\nif (is_night_time(data.dtime)) {\n    if (data.alarmTrigger == '') {\n        data.alarmTrigger = 'Time';\n    }\n    else {\n        data.alarmTrigger += ' Time';\n    }\n}\nelse if (data.alarmTrigger == ''){\n    return null\n}\n\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.alarmTrigger = data.alarmTrigger;\nmsg.topic = \"INSERT INTO Alarms(dtime, alarm_trigger) VALUES (:dtime, :alarmTrigger);\";\n//\"trigger\" is a reserved word\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1835,7 +1920,7 @@
         "type": "function",
         "z": "1bbf2bd779b47eea",
         "name": "insert raw data",
-        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.reading];\nmsg.topic = \"INSERT INTO Etot(dtime, reading) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "func": "const data = msg.payload;\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.reading = data.reading;\nmsg.topic = \"INSERT INTO Etot(dtime, reading) VALUES ( :dtime, :reading);\" ;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1970,8 +2055,8 @@
         "initialize": "// Code added here will be run once\n// whenever the node is started.\nflow.set(\"previousEtot\", 0)",
         "finalize": "",
         "libs": [],
-        "x": 840,
-        "y": 420,
+        "x": 820,
+        "y": 440,
         "wires": [
             [
                 "52b5d72f024b6e2c",
@@ -1984,7 +2069,7 @@
         "type": "function",
         "z": "1bbf2bd779b47eea",
         "name": "insert daydiff data",
-        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.topic = \"INSERT INTO EtotDayDiff(dtime, day_diff) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "func": "const data = msg.payload;\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.day_diff = data.day_diff;\nmsg.topic = \"INSERT INTO EtotDayDiff(dtime, day_diff) VALUES ( :dtime, :day_diff);\" ;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1995,7 +2080,8 @@
         "wires": [
             [
                 "9d51199dcca2eef2",
-                "eb044e222dcbd8f2"
+                "eb044e222dcbd8f2",
+                "9e29913b01c08a34"
             ]
         ]
     },
@@ -2072,6 +2158,47 @@
         "wires": [
             [
                 "7079435b87468b11"
+            ]
+        ]
+    },
+    {
+        "id": "ca3e04abfd890df1",
+        "type": "http request",
+        "z": "1bbf2bd779b47eea",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/total",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1550,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9e29913b01c08a34",
+        "type": "function",
+        "z": "1bbf2bd779b47eea",
+        "name": "prepare request",
+        "func": "if (!msg) {\n    return null;\n}\nconst data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"reading\": data.day_diff,\n    \"device_type\": \"Total Daily Power Consumption (Wh)\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1300,
+        "y": 300,
+        "wires": [
+            [
+                "ca3e04abfd890df1"
             ]
         ]
     },
@@ -2304,7 +2431,7 @@
         "type": "function",
         "z": "862bc43147b5a8a2",
         "name": "insert daydiff data",
-        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.topic = \"INSERT INTO WtotDayDiff(dtime, day_diff) VALUES ( ?, ?);\" ;\nreturn msg;",
+        "func": "const data = msg.payload;\nmsg.payload = [data.dtime, data.day_diff];\nmsg.payload = {};\nmsg.payload.dtime = data.dtime;\nmsg.payload.day_diff = data.day_diff\nmsg.topic = \"INSERT INTO WtotDayDiff(dtime, day_diff) VALUES ( :dtime, :day_diff);\" ;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2315,7 +2442,8 @@
         "wires": [
             [
                 "eaa57acdeefa63d6",
-                "30e599c8ecc14981"
+                "30e599c8ecc14981",
+                "3088c2cf409f4835"
             ]
         ]
     },
@@ -2391,6 +2519,47 @@
         "wires": [
             [
                 "eaa57acdeefa63d6"
+            ]
+        ]
+    },
+    {
+        "id": "2af4e9b0c08d58e0",
+        "type": "http request",
+        "z": "862bc43147b5a8a2",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:5000/total",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1450,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3088c2cf409f4835",
+        "type": "function",
+        "z": "862bc43147b5a8a2",
+        "name": "prepare request",
+        "func": "if (!msg) {\n    return null;\n}\nconst data = msg.payload;\nmsg.topic = ''\nmsg.headers = {\n    \"Content-Type\": \"application/json\"\n};\nmsg.payload = {\n    \"dtime\": data.dtime,\n    \"reading\": data.day_diff,\n    \"device_type\": \"Total Water Consumption (lt)\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 300,
+        "wires": [
+            [
+                "2af4e9b0c08d58e0"
             ]
         ]
     }

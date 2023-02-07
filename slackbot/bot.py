@@ -15,18 +15,16 @@ load_dotenv(env_path)
 slack_token = os.getenv('SLACK_TOKEN')
 client = slack.WebClient(token=slack_token)
 
-def format_dtime(iso_dtime):
-    utc_dt = iso_dtime[:-1]
-    timezone = pytz.timezone("Europe/Athens")
-    dtime = datetime.fromisoformat(utc_dt)
-    dtime = timezone.localize(dtime)
-    return dtime.strftime("%H:%M:%S, %B %d %Y")
+def format_dtime(iso_dtime, with_time=False): 
+    dtime = datetime.fromisoformat(iso_dtime).replace(tzinfo=pytz.UTC)
+    dtime = dtime.astimezone(pytz.timezone("Europe/Athens"))
+    return dtime.strftime("%H:%M:%S, %B %d %Y") if with_time else dtime.strftime("%B %d %Y")
 
 @app.route('/alarm', methods=['POST'])
 def alarm_notification():
     data = request.json
 
-    dtime = format_dtime(data.get('dtime'))
+    dtime = format_dtime(data.get('dtime'), True)
     alarm_trigger = data.get('alarm_trigger')
     client.chat_postMessage(
         channel="C04DG8G7M4N", 
@@ -40,7 +38,7 @@ def alarm_notification():
         "fields": [
         {
             "type": "mrkdwn",
-            "text": f'Trigger: {alarm_trigger}'
+            "text": f'Trigger: {alarm_trigger}\n\n'
         }
         ]
         }]
@@ -48,7 +46,7 @@ def alarm_notification():
     return Response(), 200
 
 @app.route('/aggregation', methods=['POST'])
-def total_notification():
+def aggregation_notification():
     data = request.json
 
     dtime = format_dtime(data.get('dtime'))
@@ -68,7 +66,33 @@ def total_notification():
         "fields" : [
         {
             "type" : "mrkdwn",
-            "text" : f'Device: {curr_device}\nDate: {dtime}\n{aggregation_type}: {aggregation}'
+            "text" : f'Device: {curr_device}\nDate: {dtime}\n{aggregation_type}: {aggregation}\n\n'
+        }
+        ]
+        }
+        ]
+    )
+
+@app.route('/total', methods=['POST'])
+def total_notification():
+    data = request.json
+
+    dtime = format_dtime(data.get('dtime'))
+    reading = ceil(data.get('reading'))
+    device_type = data.get('device_type')
+    client.chat_postMessage(
+        channel= "C04N3ULSX9R", 
+        blocks = [
+        {
+        "type": "section",
+        "text": {
+            "text": f'*{device_type}*',
+            "type": "mrkdwn"
+        },
+        "fields" : [
+        {
+            "type" : "mrkdwn",
+            "text" : f'Date: {dtime}\nTotal: {reading}\n\n'
         }
         ]
         }

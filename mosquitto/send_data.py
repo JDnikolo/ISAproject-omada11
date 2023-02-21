@@ -77,10 +77,10 @@ def send_readings(stop:int = math.inf, step:int=1, start:datetime = datetime.dat
         ## sensor readings and append
         if current_day != current_time.day:
             print("Generating daily meter data.")
-            Etot,Etotdata = generateEtot(Etot,time=current_time)
+            Etot,Etotdata = generateEtot(Etot,time=current_time-datetime.timedelta(days=1))
             messages.append({"topic":homeTopic+dayTopic+"/Etot",\
                 "payload":Etotdata,"qos":qos})
-            Wtot,Wtotdata = generateWtot(Wtot,time=current_time)
+            Wtot,Wtotdata = generateWtot(Wtot,time=current_time-datetime.timedelta(days=1))
             messages.append({"topic":homeTopic+dayTopic+"/Wtot",\
                 "payload":Wtotdata,"qos":qos})  
             ## Reset times Mov1 was triggered
@@ -93,35 +93,6 @@ def send_readings(stop:int = math.inf, step:int=1, start:datetime = datetime.dat
         i+=step
         current_time = start_time+datetime.timedelta(minutes=15*i)
 
-
-
-def send_daily_only(start:datetime = datetime.datetime.now(),\
-    address="localhost",homeTopic="/home",
-    dayTopic="/day",withSleep=True):
-    Etot = 0
-    Wtot = 0
-    i=1
-    start_time=datetime.datetime(start.year,start.month,start.day,minute=50)
-    current_time=start_time
-    while True:
-        ## on the final reading for each day, generate daily
-        ## sensor readings and append
-        if current_time.hour==23 and current_time.minute>=45:
-            messages=[]
-            print("\nGenerating daily meter data.")
-            Etot,Etotdata = generateEtot(Etot,time=current_time)
-            messages.append({"topic":homeTopic+dayTopic+"/Etot",\
-                "payload":Etotdata,"qos":qos})
-            Wtot,Wtotdata = generateWtot(Wtot,time=current_time)
-            messages.append({"topic":homeTopic+dayTopic+"/Wtot",\
-                "payload":Wtotdata,"qos":qos})     
-            #print(messages)
-            pub.multiple(messages,hostname=address)
-        if withSleep:
-            sleep(0.25)
-        i+=1
-        current_time = start_time+datetime.timedelta(hours=1*i)
-        print(current_time,end='\r')
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description="Generate meter readings.")

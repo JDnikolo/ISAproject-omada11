@@ -34,43 +34,43 @@ def send_readings(stop:int = math.inf, step:int=1, start:datetime = datetime.dat
         ## Generate TH[1,2] data using previous readings and append
         th1,th1data = generate_TH(th1,current_time)
         messages.append({"topic":homeTopic+quarterTopic+"/TH/TH1",\
-            "payload":th1data,"qos":qos})
+            "payload":th1data,"qos":qos,"retain":True})
         th2,th2data = generate_TH(th2,current_time)
         messages.append({"topic":homeTopic+quarterTopic+"/TH/TH2",\
-            "payload":th2data,"qos":qos})
+            "payload":th2data,"qos":qos,"retain":True})
         ## Generate HVAC[1,2] data and append
         messages.append({"topic":homeTopic+quarterTopic+"/HVAC/HVAC1",\
-            "payload":generateHVAC(current_time),"qos":qos})
+            "payload":generateHVAC(current_time),"qos":qos,"retain":True})
         messages.append({"topic":homeTopic+quarterTopic+"/HVAC/HVAC2",\
-            "payload":generateHVAC(current_time),"qos":qos})
+            "payload":generateHVAC(current_time),"qos":qos,"retain":True})
         ## Generate MiAC[1,2] readings and append
         messages.append({"topic":homeTopic+quarterTopic+"/MiAC/MiAC1",\
-            "payload":generateMiAC(device=1,time=current_time),"qos":qos})
+            "payload":generateMiAC(device=1,time=current_time),"qos":qos,"retain":True})
         messages.append({"topic":homeTopic+quarterTopic+"/MiAC/MiAC2",\
-            "payload":generateMiAC(device=2,time=current_time),"qos":qos})
+            "payload":generateMiAC(device=2,time=current_time),"qos":qos,"retain":True})
         ## Generate W1 reading and append.
         W1data = generateW1(time=current_time)
         messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
-            "payload":W1data,"qos":qos})
+            "payload":W1data,"qos":qos,"retain":True})
         ## Generate W1 late data every 20 seconds and append
         if i%20==0:
             print("Generating late W1 data.")
             W1data = generateW1(time=current_time-datetime.timedelta(days=1)\
                 +datetime.timedelta(seconds=random.randint(1,59),minutes=random.randint(0,10)))
             messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
-            "payload":W1data,"qos":qos})
+            "payload":W1data,"qos":qos,"retain":True})
         ## Generate VERY late W1 data every 120 seconds and append
         if i%120==0:
             print("Generating VERY late W1 data.")
             W1data = generateW1(time=current_time-datetime.timedelta(days=10)\
                 +datetime.timedelta(seconds=random.randint(1,59),minutes=random.randint(0,10)))
             messages.append({"topic":homeTopic+quarterTopic+"/W/W1",\
-            "payload":W1data,"qos":qos})
+            "payload":W1data,"qos":qos,"retain":True})
         ## Randomly generate Mov1 readings and append
         if random.random()>0.5+0.1*movTriggered:
             #print(0.1*movTriggered,movTriggered)
             messages.append({"topic":homeTopic+moveSensorTopic+"/Mov1",\
-            "payload":generateMov1(time=current_time),"qos":qos})
+            "payload":generateMov1(time=current_time),"qos":qos,"retain":True})
             movTriggered+=1
             print(f"Triggered Mov1. Times today: {movTriggered}")
         ## on the final reading for each day, generate daily
@@ -79,10 +79,10 @@ def send_readings(stop:int = math.inf, step:int=1, start:datetime = datetime.dat
             print("Generating daily meter data.")
             Etot,Etotdata = generateEtot(Etot,time=current_time-datetime.timedelta(days=1))
             messages.append({"topic":homeTopic+dayTopic+"/Etot",\
-                "payload":Etotdata,"qos":qos})
+                "payload":Etotdata,"qos":qos,"retain":True})
             Wtot,Wtotdata = generateWtot(Wtot,time=current_time-datetime.timedelta(days=1))
             messages.append({"topic":homeTopic+dayTopic+"/Wtot",\
-                "payload":Wtotdata,"qos":qos})  
+                "payload":Wtotdata,"qos":qos,"retain":True})  
             ## Reset times Mov1 was triggered
             movTriggered = 0
             current_day=current_time.day      

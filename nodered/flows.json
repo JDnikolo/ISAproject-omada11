@@ -143,7 +143,7 @@
         "type": "function",
         "z": "6569ea1565314d25",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -275,7 +275,7 @@
         "type": "debug",
         "z": "6569ea1565314d25",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -391,7 +391,7 @@
         "type": "function",
         "z": "5deb24103533351d",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseInt(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseInt(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -523,7 +523,7 @@
         "type": "debug",
         "z": "5deb24103533351d",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -639,7 +639,7 @@
         "type": "function",
         "z": "3daf70b601a8f1f4",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseInt(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseInt(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -771,7 +771,7 @@
         "type": "debug",
         "z": "3daf70b601a8f1f4",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1020,7 +1020,7 @@
         "type": "function",
         "z": "b2ec95917b31b4c9",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nif (date > context.get(\"startOfDay\")) {\n    const temp_date = new Date(date.getFullYear(),\n        date.getMonth(),\n        date.getDate(),);\n    context.set(\"startOfDay\", temp_date); \n}\n// const startOfDay = new Date();\nconst startOfDay = new Date(context.get(\"startOfDay\"));\n// startOfDay.setHours(0, 0, 0, 0);\n// const startOfYesterday = new Date();\nconst startOfYesterday = new Date(context.get(\"startOfDay\"));\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\n// startOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nif (date > context.get(\"startOfDay\")) {\n    const temp_date = new Date(date.getFullYear(),\n        date.getMonth(),\n        date.getDate(),);\n    context.set(\"startOfDay\", temp_date); \n}\n// const startOfDay = new Date();\nconst startOfDay = new Date(context.get(\"startOfDay\"));\n// startOfDay.setHours(0, 0, 0, 0);\n// const startOfYesterday = new Date();\nconst startOfYesterday = new Date(context.get(\"startOfDay\"));\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\n// startOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\nconst date = new Date();\ndate.setHours(0,0,0,0);\ncontext.set(\"startOfDay\", date);",
@@ -1139,7 +1139,7 @@
         "type": "function",
         "z": "f90b855aadc86ac8",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst device = msg.topic.split(\"/\")[3];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst device = msg.topic.split(\"/\")[3];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1272,7 +1272,7 @@
         "type": "debug",
         "z": "f90b855aadc86ac8",
         "name": "too late",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1443,7 +1443,7 @@
         "type": "function",
         "z": "22cff19950bf15c7",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1647,7 +1647,7 @@
         "type": "debug",
         "z": "22cff19950bf15c7",
         "name": "debug 17",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1788,7 +1788,7 @@
         "type": "function",
         "z": "41d53ab346bb4ea0",
         "name": "parse data",
-        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
+        "func": "const items = msg.payload.split(\"|\");\nconst date = new Date(items[0]);\nconst value = parseFloat(items[1]);\nconst device = msg.topic.split(\"/\")[4];\nlet on_off = global.get('on_off');\nif (!on_off[device]) {\n    return null;\n}\nconst startOfDay = new Date();\nstartOfDay.setHours(0, 0, 0, 0);\nconst startOfYesterday = new Date();\nstartOfYesterday.setDate(startOfYesterday.getDate()-1)\nstartOfYesterday.setHours(0, 0, 0, 0);\nmsg.payload={\"dtime\":date,\n    \"device\":device,\n    \"reading\":value,\n    \"startOfDay\":startOfDay,\n    \"startOfYesterday\":startOfYesterday}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2194,6 +2194,97 @@
         "wires": [
             [
                 "a4bc5f3a4e87bd4a"
+            ]
+        ]
+    },
+    {
+        "id": "ba7fb9715f6dc2b8",
+        "type": "http in",
+        "z": "7732566edda24d93",
+        "name": "on_off http in",
+        "url": "/on_off",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 580,
+        "wires": [
+            [
+                "658a1f7bf87ac8cf"
+            ]
+        ]
+    },
+    {
+        "id": "658a1f7bf87ac8cf",
+        "type": "function",
+        "z": "7732566edda24d93",
+        "name": "sig_verification",
+        "func": "const qs = global.get('qs');\nconst crypto = global.get('crypto');\nconst SLACK_SIGNING_SECRET = env.get(\"SIGNING_SECRET\");\nlet res_msg = msg;\nlet slackSignature = msg.req.headers['x-slack-signature'];\nlet requestBody = qs.stringify(msg.req.body, { format: 'RFC1738' });\nlet timestamp = msg.req.headers['x-slack-request-timestamp'];\n\nlet time = Math.floor(new Date().getTime()/1000);\n\nif (Math.abs(time-timestamp) > 300) {\n    res_msg.statusCode = 400;\n    return [null, res_msg];\n}\n\nlet sigBasestring = 'v0:' + timestamp + ':' + requestBody;\nlet expectedSig = 'v0=' +\n    crypto.createHmac('sha256', SLACK_SIGNING_SECRET)\n        .update(sigBasestring, 'utf8')\n        .digest('hex');\nif (!crypto.timingSafeEqual(\n    Buffer.from(expectedSig, 'utf8'),\n    Buffer.from(slackSignature, 'utf8'))) {\n        res_msg.statusCode = 400;\n        return [null, res_msg];\n    }\nres_msg.statusCode = 200;\nreturn [msg, res_msg];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 580,
+        "wires": [
+            [
+                "2aed24dd93b026e7"
+            ],
+            [
+                "83e54aceb6487261"
+            ]
+        ]
+    },
+    {
+        "id": "83e54aceb6487261",
+        "type": "http response",
+        "z": "7732566edda24d93",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 550,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "ac8965e04fd87b1e",
+        "type": "http request",
+        "z": "7732566edda24d93",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://slack.com/api/chat.postMessage",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "bearer",
+        "senderr": false,
+        "headers": [],
+        "x": 810,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2aed24dd93b026e7",
+        "type": "function",
+        "z": "7732566edda24d93",
+        "name": "on_off",
+        "func": "if (!msg) {\n    return null;\n}\n\nconst SLACK_TOKEN = env.get(\"SLACK_TOKEN\");\nlet data = msg.payload;\nlet channel_id = data.channel_id;\nlet user_name = data.user_name;\nlet text = data.text;\nmsg.headers = {\n    \"Authorization\": `Bearer ${SLACK_TOKEN}`,\n    \"Content-Type\": \"application/json; charset=utf-8\"\n};\nif ((text.split(' ')).length != 1) {\n    msg.payload = {\n        \"channel\": channel_id,\n        \"text\": `${user_name}, you need to specify exactly one device that you want to turn on/off. For more info type '/on_off -help'`\n    }\n    return msg;\n}\nif (text == \"-help\" || text == \"-h\") {\n    msg.payload = {\n        \"channel\": channel_id,\n        \"text\": `usage: /on_off device\\t#Turns on/off the specidfied device\\n/on_off -devices\\t#Returns the available devices\\n/on_off -help\\t#Returns the use cases of the command\\n/on_off -h\\t#Same as /on_off -help`\n    }\n    return msg;\n}\nlet on_off = global.get('on_off');\n\nif (text == \"-devices\") {\n    let devices = \"\";\n    for (let device in on_off) {\n        devices += device + '\\n'\n    }\n    msg.payload = {\n        \"channel\": channel_id,\n        \"text\": `The available devices are:\\n${devices}`\n    }\n    return msg;\n}\n\nif (!(text in on_off)) {\n    msg.payload = {\n        \"channel\": channel_id,\n        \"text\": `${text} is not a device. Use /on_off -devices to see the available devices.`\n    }\n    return msg;\n}\n\n\non_off[text] = !on_off[text];\nif (on_off[text]) {\n    msg.payload = {\n    \"channel\": channel_id,\n    \"text\": `Turning on ${text}`\n    }\n}\nelse {\n    msg.payload = {\n        \"channel\": channel_id,\n        \"text\": `Turning off ${text}`\n    }\n}\n\nglobal.set('on_off', on_off)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set('on_off', {\n    \"TH1\": true,\n    \"TH2\": true,\n    \"HVAC1\": true,\n    \"HVAC2\": true,\n    \"MiAC1\": true,\n    \"MiAC2\": true,\n    \"W1\": true,\n    \"Mov1\": true,\n    \"Etot\": true,\n    \"Wtot\": true\n})",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 480,
+        "wires": [
+            [
+                "ac8965e04fd87b1e"
             ]
         ]
     }

@@ -1,0 +1,40 @@
+{
+    "display_information": {
+        "name": "Smart Home Messenger"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "Smart Home Messenger",
+            "always_online": false
+        },
+        "slash_commands": [
+            {
+                "command": "/last_reading",
+                "url": "[public_domain]/last_reading",
+                "description": "Returns the last reading of the specified device.",
+                "usage_hint": "Use /last_reading -h for all the available parameters",
+                "should_escape": false
+            },
+            {
+                "command": "/on_off",
+                "url": "[public_domain]/on_off",
+                "description": "Turns on or off the specified device.",
+                "usage_hint": "Use /on_off -h for all the available parameters",
+                "should_escape": false
+            }
+        ]
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "chat:write",
+                "commands"
+            ]
+        }
+    },
+    "settings": {
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}

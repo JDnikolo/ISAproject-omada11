@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS iot_home.Water(
     dtime DATETIME NOT NULL,
     device VARCHAR(5) NOT NULL,
     reading DECIMAL(4,3) NOT NULL,
-    PRIMARY KEY (dtime,device)   
+    arrival_status ENUM('ontime','late','rejected') DEFAULT 'ontime' NOT NULL,
+    PRIMARY KEY (dtime,device,arrival_status)   
 );
 CREATE TABLE IF NOT EXISTS iot_home.WaterSumDay(
     dtime DATETIME NOT NULL,
@@ -116,6 +117,7 @@ CREATE TABLE IF NOT EXISTS iot_home.Alarms(
 -- rejected late events
 
 CREATE TABLE IF NOT EXISTS iot_home.RejectedEvents(
+    event_id INT NOT NULL AUTO_INCREMENT
     dtime_event DATETIME NOT NULL,
     dtime_received DATETIME NOT NULL,
     device varchar(5) NOT NULL,

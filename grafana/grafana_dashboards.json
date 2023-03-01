@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 28,
+  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -996,7 +996,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT a.`dtime_event`, reading AS 'Rejected Events'  FROM rejectedevents a  GROUP BY a.`dtime_event`;",
+          "rawSql": "SELECT a.`dtime_event`, reading AS 'Rejected Events'  FROM rejectedevents a ;",
           "refId": "D",
           "select": [
             [
@@ -1609,7 +1609,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT a.`dtime`, reading AS 'rejected'  FROM water a WHERE a.`arrival_status` = 'rejected' GROUP BY a.`dtime`;",
+          "rawSql": "SELECT a.`dtime`, reading AS 'rejected'  FROM water a WHERE a.`arrival_status` = 'rejected';",
           "refId": "D",
           "select": [
             [
@@ -1638,7 +1638,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT a.`dtime`, reading AS 'late'  FROM water a WHERE a.`arrival_status` = 'late' GROUP BY a.`dtime`;",
+          "rawSql": "SELECT a.`dtime`, reading AS 'late'  FROM water a WHERE a.`arrival_status` = 'late' ;",
           "refId": "A",
           "select": [
             [
@@ -1667,7 +1667,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT a.`dtime`, reading AS 'ontime'  FROM water a WHERE a.`arrival_status` = 'ontime' GROUP BY a.`dtime`;",
+          "rawSql": "SELECT a.`dtime`, reading AS 'ontime'  FROM water a WHERE a.`arrival_status` = 'ontime';",
           "refId": "B",
           "select": [
             [
@@ -1871,7 +1871,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT DATE_FORMAT(dtime,'%m-%d') as dtime, day_count AS 'movementsumday'  FROM movementsumday a GROUP BY a.`dtime`;",
+          "rawSql": "SELECT DATE_FORMAT(dtime,'%m-%d') as dtime, day_count AS 'movementsumday'  FROM movementsumday a ;",
           "refId": "D",
           "select": [
             [
@@ -2292,12 +2292,12 @@
     "list": []
   },
   "time": {
-    "from": "2023-02-19T08:27:24.000Z",
-    "to": "2023-02-21T18:44:50.000Z"
+    "from": "now-7d",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "kostastsaousis",
+  "title": "iot_grafana",
   "uid": "cGPh5rJ4k",
-  "version": 64
+  "version": 9
 }

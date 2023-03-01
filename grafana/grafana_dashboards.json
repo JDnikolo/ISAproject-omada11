@@ -823,7 +823,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT v.event_id, v.dtime_event, v.reading\r\nFROM `rejectedevents` v\r\n-- where v.device = 'HVAC1'\r\nORDER BY v.dtime_event asc;",
+          "rawSql": "\r\n SELECT DATE_FORMAT(v.dtime_received,'%Y-%m-%d') AS \"Received_Date\"\r\n, v.dtime_event, v.reading\r\nFROM `rejectedevents` v\r\n-- where v.device = 'HVAC1'\r\nORDER BY v.dtime_event asc;",
           "refId": "A",
           "select": [
             [

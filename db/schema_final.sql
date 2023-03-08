@@ -117,7 +117,6 @@ CREATE TABLE IF NOT EXISTS iot_home.Alarms(
 -- rejected late events
 
 CREATE TABLE IF NOT EXISTS iot_home.RejectedEvents(
-    event_id INT NOT NULL AUTO_INCREMENT
     dtime_event DATETIME NOT NULL,
     dtime_received DATETIME NOT NULL,
     device varchar(5) NOT NULL,
